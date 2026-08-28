@@ -40,8 +40,9 @@ Este arquivo acompanha as fases 0–8 aprovadas. Publicação/EAS/Play Store per
 
 - [x] TypeScript sem erros
 - [x] Lint sem erros
-- [x] 34 testes unitários e de contrato
+- [x] 37 testes unitários e de contrato
 - [x] Backend validado localmente
+- [x] API publicada no Render configurada como endereço padrão do aplicativo
 - [x] Bundle Android gerado com sucesso
 - [x] App iniciado no Expo Go/Android local
 - [x] Login, logout, painel, filtros e CRUD de transações validados no emulador

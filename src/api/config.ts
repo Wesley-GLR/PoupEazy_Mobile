@@ -1,10 +1,11 @@
-import { Platform } from 'react-native';
+export const DEFAULT_API_BASE_URL = 'https://poupeazy-backend.onrender.com/api';
 
-const fallbackUrl = Platform.select({
-  android: 'http://10.0.2.2:3001/api',
-  default: 'http://localhost:3001/api',
-});
+export function resolveApiBaseUrl(configuredUrl?: string) {
+  return (configuredUrl?.trim() || DEFAULT_API_BASE_URL).replace(/\/+$/, '');
+}
 
-export const API_BASE_URL = (process.env.EXPO_PUBLIC_API_URL?.trim() || fallbackUrl).replace(/\/$/, '');
+export const API_BASE_URL = resolveApiBaseUrl(process.env.EXPO_PUBLIC_API_URL);
 
-export const DEFAULT_REQUEST_TIMEOUT_MS = 15_000;
+// O plano gratuito do Render pode precisar de alguns segundos extras no primeiro
+// acesso depois de um periodo de inatividade.
+export const DEFAULT_REQUEST_TIMEOUT_MS = 45_000;

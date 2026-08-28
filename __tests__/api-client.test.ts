@@ -1,3 +1,9 @@
+import { fetch } from 'expo/fetch';
+
+import { ApiError, apiRequest, setUnauthorizedHandler } from '@/api/client';
+import { DEFAULT_API_BASE_URL } from '@/api/config';
+import { clearSessionToken, getSessionToken } from '@/auth/token-storage';
+
 jest.mock('expo/fetch', () => ({
   fetch: jest.fn(),
 }));
@@ -6,11 +12,6 @@ jest.mock('@/auth/token-storage', () => ({
   getSessionToken: jest.fn(),
   clearSessionToken: jest.fn(),
 }));
-
-import { fetch } from 'expo/fetch';
-
-import { clearSessionToken, getSessionToken } from '@/auth/token-storage';
-import { ApiError, apiRequest, setUnauthorizedHandler } from '@/api/client';
 
 const fetchMock = fetch as jest.Mock;
 const getSessionTokenMock = getSessionToken as jest.Mock;
@@ -37,6 +38,7 @@ describe('API client contract', () => {
   });
 
   test('sends JSON, standard headers and the bearer token', async () => {
+    expect(DEFAULT_API_BASE_URL).toBe('https://poupeazy-backend.onrender.com/api');
     fetchMock.mockResolvedValue(response(200, '{"id":"transaction-1"}'));
 
     await expect(
