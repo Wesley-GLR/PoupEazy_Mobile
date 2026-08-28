@@ -1,0 +1,50 @@
+diff --git a/node_modules/react-native-pluggy-connect/lib/commonjs/index.js b/node_modules/react-native-pluggy-connect/lib/commonjs/index.js
+index 25e4f6b..7edefb4 100644
+--- a/node_modules/react-native-pluggy-connect/lib/commonjs/index.js
++++ b/node_modules/react-native-pluggy-connect/lib/commonjs/index.js
+@@ -15,6 +15,8 @@ var _react = _interopRequireWildcard(require("react"));
+ 
+ var _reactNative = require("react-native");
+ 
++var _reactNativeSafeAreaContext = require("react-native-safe-area-context");
++
+ var _utils = require("./utils");
+ 
+ var _ConnectWebView = require("./components/ConnectWebView");
+@@ -218,7 +220,7 @@ const PluggyConnect = /*#__PURE__*/_react.default.memo(({
+     setIsWaitingPluggyResponse(false);
+   }, [item, oauthUrl]);
+   const connectWebviewVisible = !oauthUrl || isWaitingPluggyResponse;
+-  return /*#__PURE__*/_react.default.createElement(_reactNative.SafeAreaView, {
++  return /*#__PURE__*/_react.default.createElement(_reactNativeSafeAreaContext.SafeAreaView, {
+     style: styles.container
+   }, /*#__PURE__*/_react.default.createElement(_ConnectWebView.ConnectWebView, {
+     connectUrl: connectUrl,
+diff --git a/node_modules/react-native-pluggy-connect/lib/module/index.js b/node_modules/react-native-pluggy-connect/lib/module/index.js
+index 4f4fc24..71de974 100644
+--- a/node_modules/react-native-pluggy-connect/lib/module/index.js
++++ b/node_modules/react-native-pluggy-connect/lib/module/index.js
+@@ -2,7 +2,8 @@ import 'react-native-url-polyfill/auto';
+ import './base64-polyfill';
+ import isEqual from 'lodash.isequal';
+ import React, { useCallback, useEffect, useRef, useState } from 'react';
+-import { SafeAreaView, StyleSheet } from 'react-native';
++import { StyleSheet } from 'react-native';
++import { SafeAreaView } from 'react-native-safe-area-context';
+ import { buildConnectUrl, isConnectEventType, sendMessageToWebView, isInstitutionSelectedEventType, eventHasItemInPayload } from './utils';
+ import { ConnectWebView } from './components/ConnectWebView';
+ import { OauthWebView } from './components/OauthWebView';
+diff --git a/node_modules/react-native-pluggy-connect/src/index.tsx b/node_modules/react-native-pluggy-connect/src/index.tsx
+index 401390d..4639285 100644
+--- a/node_modules/react-native-pluggy-connect/src/index.tsx
++++ b/node_modules/react-native-pluggy-connect/src/index.tsx
+@@ -8,7 +8,8 @@ import {
+ } from 'pluggy-connect-sdk';
+ import isEqual from 'lodash.isequal';
+ import React, { useCallback, useEffect, useRef, useState } from 'react';
+-import { SafeAreaView, StyleSheet } from 'react-native';
++import { StyleSheet } from 'react-native';
++import { SafeAreaView } from 'react-native-safe-area-context';
+ import { WebView } from 'react-native-webview';
+ import {
+   buildConnectUrl,
