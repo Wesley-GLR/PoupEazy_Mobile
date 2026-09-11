@@ -135,6 +135,28 @@ npx expo start --clear
 Variáveis com o prefixo `EXPO_PUBLIC_` fazem parte do bundle do aplicativo. Portanto, esse espaço
 deve conter apenas configurações públicas, nunca senhas, tokens privados ou credenciais da Pluggy.
 
+### Correção do `URL.canParse` no Metro
+
+O `metro.config.js` precisa existir por causa de um conflito interno do Expo SDK 57. A renderização
+web do Expo Router acontece no mesmo processo Node do Metro e executa o `setupURLPolyfill` do React
+Native, que substitui o `URL` global por uma implementação mínima sem o método estático `canParse`.
+
+Como o Metro usa `URL.canParse` para interpretar as requisições de bundle, qualquer acesso à rota web
+fazia o servidor passar a responder `500` para **todas** as plataformas, inclusive Android:
+
+```text
+TypeError: URL.canParse is not a function
+    at parseBundleOptionsFromBundleRequestUrl (node_modules/metro/src/lib/...)
+```
+
+A proteção tem duas camadas e nenhuma delas deve ser removida enquanto o Expo não corrigir o conflito
+na origem:
+
+1. `metro.config.js` restaura a implementação do Node antes de cada requisição do bundler.
+2. `web.output` usa `single` em vez de `static`, o que dispensa a renderização no servidor. A
+   interface web do PoupEazy é mantida em um repositório próprio, então o Expo Router aqui só precisa
+   servir o aplicativo.
+
 ---
 
 ## API em produção
@@ -204,6 +226,7 @@ PoupEazy_Mobile/
 ├── app.json
 ├── eas.json               # Perfis de build e distribuição do Expo Application Services
 ├── eslint.config.js
+├── metro.config.js        # Configuração do bundler e correção do URL global do Metro
 ├── LICENSE
 ├── migration-progress.md
 ├── package-lock.json
@@ -224,6 +247,9 @@ O aplicativo solicita um Connect Token ao backend e abre o widget da Pluggy. Dep
 4. cada transação é associada ao orçamento correspondente à sua própria data;
 5. categorias compatíveis são escolhidas e registros duplicados são ignorados;
 6. a importação inteira é confirmada ou revertida como uma única operação.
+
+O widget da Pluggy declara a própria área segura com `flex: 1`, então ele é aberto em um modal de tela
+cheia e não compartilha o espaço com a lista de conexões.
 
 O modal pode ser conferido no Expo Go. O retorno por aplicativo bancário ou OAuth externo exige um
 development build Android e será validado antes da fase de publicação.
@@ -265,9 +291,21 @@ A validação local da versão atual concluiu:
 - fluxos principais no Expo Go e emulador Android;
 - integração com o backend local e acesso à API publicada no Render.
 
-O `npm audit --audit-level=high` não identifica vulnerabilidades altas ou críticas. Existem 11
-alertas moderados transitivos na cadeia de ferramentas do Expo (`xcode`/`uuid`). O reparo forçado
-sugerido pelo npm faria downgrade para uma versão incompatível do Expo e não deve ser aplicado.
+O `npm audit --audit-level=high` não identifica vulnerabilidades altas ou críticas. O alerta alto do
+`js-yaml` é resolvido pelo bloco `overrides` do `package.json`, que fixa versões corrigidas dentro da
+mesma versão maior para as ferramentas de build e de teste.
+
+Permanecem 14 alertas moderados transitivos na cadeia de ferramentas do Expo. Eles não são
+corrigíveis sem quebrar o aplicativo e foram avaliados individualmente:
+
+| Pacote | Origem | Por que não é corrigido |
+|--------|--------|--------------------------|
+| `uuid` | `@expo/config-plugins` → `xcode` | O alerta afeta apenas `v3/v5/v6` recebendo `buf`. O `xcode` só chama `uuid.v4()`, então a falha não é alcançável |
+| `decode-uri-component` | `expo-router` → `query-string` | A única versão corrigida (`0.5.0`) é ESM puro e o `query-string@7` a consome por `require()`, o que quebraria o roteamento |
+| `@expo/*` | Dependências internas do Expo | Reexportam os dois itens acima; o reparo forçado do npm faria downgrade para o Expo 46 |
+
+O reparo forçado sugerido pelo npm (`npm audit fix --force`) faria downgrade para uma versão
+incompatível do Expo e não deve ser aplicado.
 
 ---
 

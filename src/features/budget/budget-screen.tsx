@@ -39,7 +39,7 @@ export default function BudgetScreen() {
   if (budgetsQuery.isError || transactionsQuery.isError) return <ErrorState onRetry={refresh} />;
 
   return (
-    <ScreenContainer refreshControl={<RefreshControl refreshing={budgetsQuery.isRefetching || transactionsQuery.isRefetching} onRefresh={refresh} tintColor={colors.primary} />}>
+    <ScreenContainer withTopInset refreshControl={<RefreshControl refreshing={budgetsQuery.isRefetching || transactionsQuery.isRefetching} onRefresh={refresh} tintColor={colors.primary} />}>
       <AppHeader title="Orçamento" subtitle="Planejado versus gasto, sem misturar as receitas." />
       <PeriodNavigator />
       {current && planned > 0 ? (

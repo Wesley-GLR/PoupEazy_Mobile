@@ -12,7 +12,7 @@ import { colors, spacing } from '@/theme';
 export default function MoreScreen() {
   const { profile, user } = useAuth();
   return (
-    <ScreenContainer>
+    <ScreenContainer withTopInset>
       <AppHeader title="Mais" subtitle="Configurações e recursos do PoupEazy." />
       <Card style={styles.profileCard}>
         <BrandLogo style={styles.logo} />

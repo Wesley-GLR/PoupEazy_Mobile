@@ -7,7 +7,7 @@ import { ThemedText } from './themed-text';
 
 export function LoadingState({ message = 'Carregando…' }: { message?: string }) {
   return (
-    <View accessibilityLiveRegion="polite" style={styles.state}>
+    <View accessibilityLiveRegion="polite" style={[styles.state, styles.screenState]}>
       <ActivityIndicator color={colors.primary} size="large" />
       <ThemedText color={colors.textMuted}>{message}</ThemedText>
     </View>
@@ -33,7 +33,7 @@ export function ErrorState({
   onRetry?: () => void;
 }) {
   return (
-    <View accessibilityLiveRegion="polite" style={styles.state}>
+    <View accessibilityLiveRegion="polite" style={[styles.state, styles.screenState]}>
       <ThemedText variant="heading" color={colors.danger}>
         Algo deu errado
       </ThemedText>
@@ -53,5 +53,8 @@ const styles = {
     padding: spacing.xxl,
     gap: spacing.md,
   } satisfies ViewStyle,
+  // Loading and error replace a whole screen, so they own the empty space
+  // instead of leaving a stripe under the status bar.
+  screenState: { flex: 1, backgroundColor: colors.background } satisfies ViewStyle,
   centered: { textAlign: 'center' as const },
 };

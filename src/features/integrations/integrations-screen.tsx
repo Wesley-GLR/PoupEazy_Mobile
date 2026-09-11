@@ -1,6 +1,7 @@
 import { PluggyConnect } from 'react-native-pluggy-connect';
 import { useState } from 'react';
-import { Alert, RefreshControl, View, type ViewStyle } from 'react-native';
+import { Alert, Modal, RefreshControl, View, type ViewStyle } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import {
   useConnectIntegration,
@@ -83,38 +84,51 @@ export default function IntegrationsScreen() {
         <Card style={styles.warningCard}>
           <ThemedText variant="label" color={colors.warning}>Teste local primeiro</ThemedText>
           <ThemedText variant="caption" color={colors.textMuted}>
-            O modal básico funciona no Expo Go compatível com SDK 57. O retorno de OAuth e de aplicativos bancários será validado depois em um development build Android local.
+            O widget abre em tela cheia e funciona no Expo Go compatível com SDK 57. O retorno de OAuth e de aplicativos bancários será validado depois em um development build Android local.
           </ThemedText>
         </Card>
       </ScreenContainer>
 
-      {token ? (
-        <PluggyConnect
-          connectToken={token}
-          includeSandbox={__DEV__}
-          language="pt"
-          theme="light"
-          forceOauthInBrowser
-          allowConnectInBackground
-          onClose={() => setToken(null)}
-          onError={(error) => {
-            setToken(null);
-            Alert.alert('Falha na conexão', error.message || 'A instituição não concluiu a conexão.');
-          }}
-          onSuccess={async ({ item }) => {
-            try {
-              const connectedItem = item as unknown as { id: string; connector?: { name?: string } };
-              const institution = connectedItem.connector?.name?.trim() || 'Instituição conectada';
-              const integration = await connect.mutateAsync({ instituicao: institution, itemId: connectedItem.id });
-              setToken(null);
-              await syncBank(integration);
-            } catch (error) {
-              setToken(null);
-              Alert.alert('Conexão criada, mas não salva', getErrorMessage(error));
-            }
-          }}
-        />
-      ) : null}
+      {/* The Pluggy widget renders a flex: 1 SafeAreaView, so it has to own a whole
+          window. Inline it would share the screen with the list above it. */}
+      <Modal
+        animationType="slide"
+        onRequestClose={() => setToken(null)}
+        presentationStyle="fullScreen"
+        statusBarTranslucent
+        visible={token !== null}>
+        <SafeAreaProvider>
+          <View style={styles.connectScreen}>
+            {token ? (
+              <PluggyConnect
+                connectToken={token}
+                includeSandbox={__DEV__}
+                language="pt"
+                theme="light"
+                forceOauthInBrowser
+                allowConnectInBackground
+                onClose={() => setToken(null)}
+                onError={(error) => {
+                  setToken(null);
+                  Alert.alert('Falha na conexão', error.message || 'A instituição não concluiu a conexão.');
+                }}
+                onSuccess={async ({ item }) => {
+                  try {
+                    const connectedItem = item as unknown as { id: string; connector?: { name?: string } };
+                    const institution = connectedItem.connector?.name?.trim() || 'Instituição conectada';
+                    const integration = await connect.mutateAsync({ instituicao: institution, itemId: connectedItem.id });
+                    setToken(null);
+                    await syncBank(integration);
+                  } catch (error) {
+                    setToken(null);
+                    Alert.alert('Conexão criada, mas não salva', getErrorMessage(error));
+                  }
+                }}
+              />
+            ) : null}
+          </View>
+        </SafeAreaProvider>
+      </Modal>
     </>
   );
 }
@@ -124,4 +138,5 @@ const styles = {
   warningCard: { backgroundColor: colors.warningSoft, borderColor: colors.warning } satisfies ViewStyle,
   header: { flexDirection: 'row', alignItems: 'flex-start', gap: spacing.md } satisfies ViewStyle,
   flex: { flex: 1, gap: spacing.xs } satisfies ViewStyle,
+  connectScreen: { flex: 1, backgroundColor: colors.surface } satisfies ViewStyle,
 };

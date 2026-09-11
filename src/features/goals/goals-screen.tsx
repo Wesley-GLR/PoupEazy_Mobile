@@ -1,9 +1,10 @@
 import { router } from 'expo-router';
 import { Alert, Pressable, RefreshControl, View, type ViewStyle } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useDeleteGoal, useGoals, useTransactions, useUpdateGoal } from '@/api/hooks';
 import { AppHeader } from '@/components/app-header';
-import { FloatingActionButton } from '@/components/floating-action-button';
+import { fabClearance, FloatingActionButton } from '@/components/floating-action-button';
 import { IconButton } from '@/components/icon-button';
 import { Card, EmptyState, ErrorState, LoadingState, ProgressBar, ScreenContainer, ThemedText, Badge } from '@/components/ui';
 import { colors, spacing } from '@/theme';
@@ -11,6 +12,7 @@ import type { Goal } from '@/types/api';
 import { daysUntil, formatCurrency, formatDate, getErrorMessage, moneyToNumber } from '@/utils/format';
 
 export default function GoalsScreen() {
+  const insets = useSafeAreaInsets();
   const goalsQuery = useGoals();
   const transactionsQuery = useTransactions();
   const update = useUpdateGoal();
@@ -40,7 +42,10 @@ export default function GoalsScreen() {
 
   return (
     <View style={styles.fill}>
-      <ScreenContainer refreshControl={<RefreshControl refreshing={goalsQuery.isRefetching || transactionsQuery.isRefetching} onRefresh={refresh} tintColor={colors.primary} />}>
+      <ScreenContainer
+        withTopInset
+        contentStyle={{ paddingBottom: insets.bottom + fabClearance }}
+        refreshControl={<RefreshControl refreshing={goalsQuery.isRefetching || transactionsQuery.isRefetching} onRefresh={refresh} tintColor={colors.primary} />}>
         <AppHeader title="Metas" subtitle="Transforme seus planos em pequenas conquistas." />
         {active.length ? active.map((goal) => {
           const progress = moneyToNumber(goal.valor_objetivo) > 0 ? moneyToNumber(goal.valor_atual) / moneyToNumber(goal.valor_objetivo) * 100 : 0;
@@ -101,7 +106,7 @@ export default function GoalsScreen() {
           </View>
         ) : null}
       </ScreenContainer>
-      <FloatingActionButton label="Nova meta" onPress={() => router.push('/(modals)/goal-form')} />
+      <FloatingActionButton bottomOffset={insets.bottom} label="Nova meta" onPress={() => router.push('/(modals)/goal-form')} />
     </View>
   );
 }

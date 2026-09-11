@@ -50,7 +50,7 @@ export default function DashboardScreen() {
   if (transactionsQuery.isError || budgetsQuery.isError) return <ErrorState onRetry={refresh} />;
 
   return (
-    <ScreenContainer refreshControl={<RefreshControl refreshing={refreshing} onRefresh={refresh} tintColor={colors.primary} />}>
+    <ScreenContainer withTopInset refreshControl={<RefreshControl refreshing={refreshing} onRefresh={refresh} tintColor={colors.primary} />}>
       <AppHeader
         title="Painel principal"
         subtitle={`Bem-vindo de volta${profile?.nome ? `, ${profile.nome.split(' ')[0]}` : ''}.`}

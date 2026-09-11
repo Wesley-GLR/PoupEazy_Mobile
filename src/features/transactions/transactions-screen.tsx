@@ -1,11 +1,12 @@
 import { router } from 'expo-router';
 import { useMemo, useState } from 'react';
-import { Alert, FlatList, RefreshControl, View, type ViewStyle } from 'react-native';
+import { Alert, FlatList, KeyboardAvoidingView, Platform, RefreshControl, View, type ViewStyle } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useDeleteTransaction, useTransactions } from '@/api/hooks';
 import { AppHeader } from '@/components/app-header';
 import { ChoiceChips } from '@/components/choice-chips';
-import { FloatingActionButton } from '@/components/floating-action-button';
+import { fabClearance, FloatingActionButton } from '@/components/floating-action-button';
 import { PeriodNavigator } from '@/components/period-navigator';
 import { TransactionRow } from '@/components/transaction-row';
 import { EmptyState, ErrorState, LoadingState, TextField, ThemedText } from '@/components/ui';
@@ -16,6 +17,7 @@ import { getErrorMessage } from '@/utils/format';
 type TypeFilter = 'todos' | 'despesa' | 'receita';
 
 export default function TransactionsScreen() {
+  const insets = useSafeAreaInsets();
   const { startDate, endDate } = usePeriod();
   const [search, setSearch] = useState('');
   const [type, setType] = useState<TypeFilter>('todos');
@@ -44,12 +46,18 @@ export default function TransactionsScreen() {
   if (query.isError) return <ErrorState onRetry={() => void query.refetch()} />;
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={styles.container}>
       <FlatList
         contentInsetAdjustmentBehavior="automatic"
-        contentContainerStyle={styles.content}
+        contentContainerStyle={[
+          styles.content,
+          { paddingTop: insets.top + spacing.lg, paddingBottom: insets.bottom + fabClearance },
+        ]}
         data={items}
         keyExtractor={(item) => item.id}
+        keyboardDismissMode={Platform.OS === 'ios' ? 'interactive' : 'on-drag'}
         keyboardShouldPersistTaps="handled"
         refreshControl={<RefreshControl refreshing={query.isRefetching} onRefresh={() => void query.refetch()} tintColor={colors.primary} />}
         ListHeaderComponent={(
@@ -79,13 +87,13 @@ export default function TransactionsScreen() {
           />
         )}
       />
-      <FloatingActionButton label="Nova transação" onPress={() => router.push('/(modals)/transaction-form')} />
-    </View>
+      <FloatingActionButton bottomOffset={insets.bottom} label="Nova transação" onPress={() => router.push('/(modals)/transaction-form')} />
+    </KeyboardAvoidingView>
   );
 }
 
 const styles = {
   container: { flex: 1, backgroundColor: colors.background } satisfies ViewStyle,
-  content: { flexGrow: 1, paddingHorizontal: spacing.lg, paddingTop: spacing.lg, paddingBottom: 110 } satisfies ViewStyle,
+  content: { flexGrow: 1, paddingHorizontal: spacing.lg } satisfies ViewStyle,
   header: { gap: spacing.lg, marginBottom: spacing.md } satisfies ViewStyle,
 };

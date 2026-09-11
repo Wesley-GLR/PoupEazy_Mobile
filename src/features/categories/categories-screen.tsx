@@ -1,8 +1,9 @@
 import { router } from 'expo-router';
 import { Alert, RefreshControl, View, type ViewStyle } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useCategories, useDeleteCategory } from '@/api/hooks';
-import { FloatingActionButton } from '@/components/floating-action-button';
+import { fabClearance, FloatingActionButton } from '@/components/floating-action-button';
 import { IconButton } from '@/components/icon-button';
 import { Badge, Card, EmptyState, ErrorState, LoadingState, ScreenContainer, ThemedText } from '@/components/ui';
 import { colors, radius, spacing } from '@/theme';
@@ -16,6 +17,7 @@ const typeLabels: Record<Category['tipo'], string> = {
 };
 
 export default function CategoriesScreen() {
+  const insets = useSafeAreaInsets();
   const query = useCategories();
   const remove = useDeleteCategory();
   if (query.isLoading) return <LoadingState message="Carregando categorias…" />;
@@ -54,7 +56,9 @@ export default function CategoriesScreen() {
 
   return (
     <View style={styles.fill}>
-      <ScreenContainer refreshControl={<RefreshControl refreshing={query.isRefetching} onRefresh={() => void query.refetch()} tintColor={colors.primary} />}>
+      <ScreenContainer
+        contentStyle={{ paddingBottom: insets.bottom + fabClearance }}
+        refreshControl={<RefreshControl refreshing={query.isRefetching} onRefresh={() => void query.refetch()} tintColor={colors.primary} />}>
         <ThemedText color={colors.textMuted}>Categorias do sistema ficam protegidas; você pode criar e editar as suas.</ThemedText>
         <Card>
           <ThemedText variant="heading">Minhas categorias</ThemedText>
@@ -65,7 +69,7 @@ export default function CategoriesScreen() {
           {system.map(renderCategory)}
         </Card>
       </ScreenContainer>
-      <FloatingActionButton label="Nova categoria" onPress={() => router.push('/(modals)/category-form')} />
+      <FloatingActionButton bottomOffset={insets.bottom} label="Nova categoria" onPress={() => router.push('/(modals)/category-form')} />
     </View>
   );
 }
