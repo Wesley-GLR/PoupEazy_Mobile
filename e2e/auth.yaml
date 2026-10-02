@@ -1,0 +1,216 @@
+# Plano de Testes, seção 7.1. Executar somente contra API/banco de teste.
+# Requer build Android debug (__DEV__) e backend NODE_ENV=test para o reset local.
+# A conta é criada pela interface e permanece no banco descartável após o fluxo.
+appId: com.wesleyglr.poupeazy
+name: Autenticação de ponta a ponta
+---
+- evalScript: ${output.authEmail = 'e2e.auth.' + Date.now() + '.' + Math.floor(Math.random() * 1000000) + '@example.com'}
+
+# Sem sessão, deve abrir o login. A conta ainda não existe: a API deve rejeitar.
+- launchApp:
+    clearState: true
+- extendedWaitUntil:
+    visible:
+      id: login-email
+    timeout: 60000
+- assertNotVisible: Painel principal
+- tapOn:
+    id: login-email
+- inputText: ${output.authEmail}
+- tapOn:
+    id: login-password
+- inputText: E2eInvalida000!
+- hideKeyboard
+- scrollUntilVisible:
+    element: Entrar
+    direction: DOWN
+- tapOn: Entrar
+- extendedWaitUntil:
+    visible: 'E-mail ou senha invalidos\.'
+    timeout: 60000
+- assertVisible:
+    id: login-email
+- assertNotVisible: Painel principal
+
+# Cadastro real pela UI, com endereço exclusivo em cada execução.
+- scrollUntilVisible:
+    element: Cadastre-se
+    direction: DOWN
+- tapOn: Cadastre-se
+- assertVisible: Registre-se
+- tapOn:
+    id: register-name
+- inputText: Usuario E2E
+- tapOn:
+    id: register-email
+- inputText: ${output.authEmail}
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: register-password
+    direction: DOWN
+- tapOn:
+    id: register-password
+- inputText: E2eInicial123!
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: register-confirmation
+    direction: DOWN
+- tapOn:
+    id: register-confirmation
+- inputText: E2eInicial123!
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      text: Criar conta
+    direction: DOWN
+- tapOn: Criar conta
+- extendedWaitUntil:
+    visible:
+      id: login-email
+    timeout: 60000
+
+# Login válido e carregamento do dashboard com dados da API real.
+- tapOn:
+    id: login-email
+- eraseText
+- inputText: ${output.authEmail}
+- tapOn:
+    id: login-password
+- eraseText
+- inputText: E2eInicial123!
+- hideKeyboard
+- scrollUntilVisible:
+    element: Entrar
+    direction: DOWN
+- tapOn: Entrar
+- extendedWaitUntil:
+    visible: Painel principal
+    timeout: 60000
+- assertVisible: Bem-vindo de volta, Usuario\.
+- assertNotVisible:
+    id: login-email
+
+# Reiniciar o processo SEM limpar dados deve restaurar o JWT via /auth/me.
+- stopApp
+- launchApp:
+    clearState: false
+- extendedWaitUntil:
+    visible: Painel principal
+    timeout: 60000
+- assertVisible: Bem-vindo de volta, Usuario\.
+- assertNotVisible:
+    id: login-email
+- tapOn: Mais
+- assertVisible: ${output.authEmail.replace(/[.]/g, '[.]')}
+- tapOn: '.*Meu perfil.*'
+- scrollUntilVisible:
+    element:
+      text: Sair da conta
+    direction: DOWN
+- tapOn: Sair da conta
+- assertVisible: Sair da conta\?
+- tapOn: '(?i)sair'
+- extendedWaitUntil:
+    visible:
+      id: login-email
+    timeout: 10000
+- assertNotVisible: Painel principal
+
+# O logout também deve persistir quando o processo é reiniciado.
+- stopApp
+- launchApp:
+    clearState: false
+- extendedWaitUntil:
+    visible:
+      id: login-email
+    timeout: 60000
+- assertNotVisible: Painel principal
+
+# Recuperação local completa: a API devolve resetToken ao build debug.
+- scrollUntilVisible:
+    element: Esqueci minha senha
+    direction: DOWN
+- tapOn: Esqueci minha senha
+- assertVisible: Recuperar senha
+- tapOn:
+    id: forgot-email
+- inputText: ${output.authEmail}
+- hideKeyboard
+- scrollUntilVisible:
+    element: Continuar
+    direction: DOWN
+- tapOn: Continuar
+- extendedWaitUntil:
+    visible:
+      id: reset-password
+    timeout: 60000
+- tapOn:
+    id: reset-password
+- inputText: E2eAtualizada456!
+- hideKeyboard
+- scrollUntilVisible:
+    element:
+      id: reset-confirmation
+    direction: DOWN
+- tapOn:
+    id: reset-confirmation
+- inputText: E2eAtualizada456!
+- hideKeyboard
+- scrollUntilVisible:
+    element: Salvar nova senha
+    direction: DOWN
+- tapOn: Salvar nova senha
+- extendedWaitUntil:
+    visible:
+      id: login-email
+    timeout: 60000
+
+# A senha anterior deve ser recusada após a redefinição.
+- tapOn:
+    id: login-email
+- eraseText
+- inputText: ${output.authEmail}
+- tapOn:
+    id: login-password
+- eraseText
+- inputText: E2eInicial123!
+- hideKeyboard
+- scrollUntilVisible:
+    element: Entrar
+    direction: DOWN
+- tapOn: Entrar
+- extendedWaitUntil:
+    visible: 'E-mail ou senha invalidos\.'
+    timeout: 60000
+- assertNotVisible: Painel principal
+
+# A nova senha deve autenticar a mesma conta; concluir sem sessão ativa.
+- tapOn:
+    id: login-password
+- eraseText
+- inputText: E2eAtualizada456!
+- hideKeyboard
+- scrollUntilVisible:
+    element: Entrar
+    direction: DOWN
+- tapOn: Entrar
+- extendedWaitUntil:
+    visible: Painel principal
+    timeout: 60000
+- tapOn: Mais
+- assertVisible: ${output.authEmail.replace(/[.]/g, '[.]')}
+- tapOn: '.*Meu perfil.*'
+- scrollUntilVisible:
+    element:
+      text: Sair da conta
+    direction: DOWN
+- tapOn: Sair da conta
+- assertVisible: Sair da conta\?
+- tapOn: '(?i)sair'
+- extendedWaitUntil:
+    visible:
+      id: login-email
+    timeout: 10000
+- assertNotVisible: Painel principal

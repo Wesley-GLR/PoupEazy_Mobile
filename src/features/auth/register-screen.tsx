@@ -42,19 +42,19 @@ export default function RegisterScreen() {
     <AuthShell title="Registre-se" subtitle="Crie sua conta e comece a economizar.">
       <View style={styles.form}>
         <Controller control={control} name="name" render={({ field }) => (
-          <TextField label="Nome completo" placeholder="Seu nome" autoCapitalize="words" autoComplete="name" value={field.value} onBlur={field.onBlur} onChangeText={field.onChange} error={errors.name?.message} />
+          <TextField testID="register-name" label="Nome completo" placeholder="Seu nome" autoCapitalize="words" autoComplete="name" value={field.value} onBlur={field.onBlur} onChangeText={field.onChange} error={errors.name?.message} />
         )} />
         <Controller control={control} name="email" render={({ field }) => (
-          <TextField label="E-mail" placeholder="seu@email.com" keyboardType="email-address" autoComplete="email" value={field.value} onBlur={field.onBlur} onChangeText={field.onChange} error={errors.email?.message} />
+          <TextField testID="register-email" label="E-mail" placeholder="seu@email.com" keyboardType="email-address" autoComplete="email" value={field.value} onBlur={field.onBlur} onChangeText={field.onChange} error={errors.email?.message} />
         )} />
         <Controller control={control} name="phone" render={({ field }) => (
           <TextField label="Telefone (opcional)" placeholder="(31) 99999-9999" keyboardType="phone-pad" autoComplete="tel" value={field.value} onBlur={field.onBlur} onChangeText={field.onChange} error={errors.phone?.message} />
         )} />
         <Controller control={control} name="password" render={({ field }) => (
-          <TextField label="Senha" placeholder="Mínimo de 6 caracteres" secureTextEntry autoComplete="new-password" value={field.value} onBlur={field.onBlur} onChangeText={field.onChange} error={errors.password?.message} />
+          <TextField testID="register-password" label="Senha" placeholder="Mínimo de 6 caracteres" secureTextEntry autoComplete="new-password" value={field.value} onBlur={field.onBlur} onChangeText={field.onChange} error={errors.password?.message} />
         )} />
         <Controller control={control} name="confirmation" render={({ field }) => (
-          <TextField label="Confirme a senha" placeholder="Digite novamente" secureTextEntry autoComplete="new-password" value={field.value} onBlur={field.onBlur} onChangeText={field.onChange} error={errors.confirmation?.message} />
+          <TextField testID="register-confirmation" label="Confirme a senha" placeholder="Digite novamente" secureTextEntry autoComplete="new-password" value={field.value} onBlur={field.onBlur} onChangeText={field.onChange} error={errors.confirmation?.message} />
         )} />
         {errors.root?.message ? <ThemedText color={colors.danger} variant="caption">{errors.root.message}</ThemedText> : null}
         <Button title="Criar conta" loading={isSubmitting} onPress={() => void onSubmit()} />

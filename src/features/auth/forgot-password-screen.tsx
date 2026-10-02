@@ -42,7 +42,7 @@ export default function ForgotPasswordScreen() {
       </Card>
       <View style={styles.form}>
         <Controller control={control} name="email" render={({ field }) => (
-          <TextField label="E-mail" placeholder="seu@email.com" keyboardType="email-address" autoComplete="email" value={field.value} onBlur={field.onBlur} onChangeText={field.onChange} error={errors.email?.message} />
+          <TextField testID="forgot-email" label="E-mail" placeholder="seu@email.com" keyboardType="email-address" autoComplete="email" value={field.value} onBlur={field.onBlur} onChangeText={field.onChange} error={errors.email?.message} />
         )} />
         {errors.root?.message ? <ThemedText color={colors.danger} variant="caption">{errors.root.message}</ThemedText> : null}
         <Button title="Continuar" loading={isSubmitting} onPress={() => void onSubmit()} />

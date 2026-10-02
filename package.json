@@ -40,6 +40,7 @@
   },
   "devDependencies": {
     "@react-native/jest-preset": "0.86.3",
+    "@testing-library/react-native": "13.3.3",
     "@types/jest": "29.5.14",
     "@types/react": "~19.2.2",
     "eslint": "^9.0.0",
@@ -47,6 +48,7 @@
     "jest": "~29.7.0",
     "jest-expo": "~57.0.5",
     "patch-package": "^8.0.1",
+    "react-test-renderer": "19.2.3",
     "typescript": "~6.0.3"
   },
   "overrides": {
@@ -64,6 +66,8 @@
     "lint": "expo lint",
     "postinstall": "patch-package",
     "test": "jest --runInBand",
+    "test:auth": "jest --runInBand --runTestsByPath __tests__/auth-context.test.tsx",
+    "test:e2e:auth": "maestro test --test-output-dir .tmp/maestro e2e/auth.yaml",
     "test:watch": "jest --watch"
   },
   "jest": {

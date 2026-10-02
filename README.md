@@ -203,7 +203,8 @@ EXPO_PUBLIC_API_URL=https://outro-endereco.example.com/api
 
 ```text
 PoupEazy_Mobile/
-├── __tests__/              # Testes do cliente HTTP, serviços e formatadores
+├── __tests__/              # Testes unitários e integração do contexto de autenticação
+├── e2e/                    # Fluxo Maestro de autenticação e instruções de execução
 ├── assets/
 │   ├── brand/              # Logotipos do PoupEazy
 │   ├── fonts/              # Fontes usadas pelo design system
@@ -275,6 +276,20 @@ development build Android e será validado antes da fase de publicação.
 
 ## Qualidade e verificações
 
+Os testes de autenticação das seções 6.1 e 7.1 do plano estão disponíveis:
+
+```bash
+# Integração do AuthProvider com React Query (7 cenários, serviços simulados)
+npm run test:auth
+
+# E2E Android com Maestro, aplicativo e API reais em ambiente de teste
+npm run test:e2e:auth
+```
+
+O E2E exige preparação do Android e da API. Consulte [o guia de autenticação](e2e/README.md)
+antes de executar. O fluxo foi preparado para execução posterior; ainda não foi validado em
+dispositivo. O `npm test` executa os testes Jest, sem iniciar o E2E.
+
 ```bash
 npx tsc --noEmit
 npm run lint
@@ -285,7 +300,7 @@ npx expo export --platform android --output-dir dist-qa
 
 A validação local da versão atual concluiu:
 
-- 37 testes automatizados;
+- 44 testes automatizados (37 unitários e 7 cenários de integração de autenticação);
 - 21 verificações do Expo Doctor;
 - exportação do bundle Android;
 - fluxos principais no Expo Go e emulador Android;

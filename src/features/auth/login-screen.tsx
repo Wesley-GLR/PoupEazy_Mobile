@@ -37,6 +37,7 @@ export default function LoginScreen() {
       <View style={styles.form}>
         <Controller control={control} name="email" render={({ field }) => (
           <TextField
+            testID="login-email"
             label="E-mail"
             placeholder="seu@email.com"
             keyboardType="email-address"
@@ -50,6 +51,7 @@ export default function LoginScreen() {
         )} />
         <Controller control={control} name="password" render={({ field }) => (
           <TextField
+            testID="login-password"
             label="Senha"
             placeholder="••••••••"
             secureTextEntry

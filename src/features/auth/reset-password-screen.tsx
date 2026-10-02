@@ -47,10 +47,10 @@ export default function ResetPasswordScreen() {
     <AuthShell title="Nova senha" subtitle="Defina uma nova senha para acessar sua conta.">
       <View style={styles.form}>
         <Controller control={control} name="password" render={({ field }) => (
-          <TextField label="Nova senha" secureTextEntry autoComplete="new-password" value={field.value} onBlur={field.onBlur} onChangeText={field.onChange} error={errors.password?.message} />
+          <TextField testID="reset-password" label="Nova senha" secureTextEntry autoComplete="new-password" value={field.value} onBlur={field.onBlur} onChangeText={field.onChange} error={errors.password?.message} />
         )} />
         <Controller control={control} name="confirmation" render={({ field }) => (
-          <TextField label="Confirme a nova senha" secureTextEntry autoComplete="new-password" value={field.value} onBlur={field.onBlur} onChangeText={field.onChange} error={errors.confirmation?.message} />
+          <TextField testID="reset-confirmation" label="Confirme a nova senha" secureTextEntry autoComplete="new-password" value={field.value} onBlur={field.onBlur} onChangeText={field.onChange} error={errors.confirmation?.message} />
         )} />
         {errors.root?.message ? <ThemedText color={colors.danger} variant="caption">{errors.root.message}</ThemedText> : null}
         <Button title="Salvar nova senha" loading={isSubmitting} onPress={() => void onSubmit()} />
