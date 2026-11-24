@@ -20,6 +20,12 @@ export interface AuthResponse {
   profile: Profile | null;
 }
 
+export interface WhatsAppLinkStatus {
+  habilitado: boolean;
+  vinculado: boolean;
+  url: string | null;
+}
+
 export interface Category {
   id: string;
   id_usuario: string | null;

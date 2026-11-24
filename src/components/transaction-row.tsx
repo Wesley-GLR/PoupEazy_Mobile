@@ -13,9 +13,10 @@ export function TransactionRow({ transaction, onPress, onLongPress }: {
 }) {
   const income = transaction.tipo === 'receita';
   const color = income ? colors.success : colors.danger;
+  const viaWhatsApp = transaction.origem === 'chatbot' ? ' · WhatsApp' : '';
   return (
     <Pressable
-      accessibilityLabel={`${transaction.descricao}, ${income ? 'receita' : 'despesa'} de ${formatCurrency(transaction.valor)}, em ${formatDate(transaction.data_transacao)}`}
+      accessibilityLabel={`${transaction.descricao}, ${income ? 'receita' : 'despesa'} de ${formatCurrency(transaction.valor)}, em ${formatDate(transaction.data_transacao)}${viaWhatsApp}`}
       accessibilityRole={onPress ? 'button' : undefined}
       onPress={onPress}
       onLongPress={onLongPress}
@@ -26,7 +27,7 @@ export function TransactionRow({ transaction, onPress, onLongPress }: {
       <View style={styles.copy}>
         <ThemedText variant="bodyMedium" numberOfLines={1}>{transaction.descricao}</ThemedText>
         <ThemedText variant="caption" color={colors.textMuted}>
-          {formatDate(transaction.data_transacao)} · {transaction.categoria?.nome ?? 'Sem categoria'}
+          {formatDate(transaction.data_transacao)} · {transaction.categoria?.nome ?? 'Sem categoria'}{viaWhatsApp}
         </ThemedText>
       </View>
       <View style={styles.amount}>

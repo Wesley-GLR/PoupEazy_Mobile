@@ -102,7 +102,7 @@ export default function IntegrationsScreen() {
             {token ? (
               <PluggyConnect
                 connectToken={token}
-                includeSandbox={__DEV__}
+                includeSandbox={true}
                 language="pt"
                 theme="light"
                 forceOauthInBrowser
