@@ -15,6 +15,7 @@ import type {
   Transaction,
   TransactionFilters,
   TransactionInput,
+  WhatsAppLinkStatus,
 } from '@/types/api';
 
 import { api } from './client';
@@ -58,6 +59,12 @@ export const transactionsService = {
   create: (input: TransactionInput) => api.post<Transaction | { duplicado: true }>('/despesas', input),
   update: (id: string, input: Partial<TransactionInput>) => api.patch<Transaction>(`/despesas/${id}`, input),
   remove: (id: string) => api.delete(`/despesas/${id}`),
+};
+
+export const whatsappService = {
+  status: () => api.get<WhatsAppLinkStatus>('/whatsapp/vinculo'),
+  createLink: () => api.post<{ url: string }>('/whatsapp/vinculo'),
+  unlink: () => api.delete('/whatsapp/vinculo'),
 };
 
 export const categoriesService = {

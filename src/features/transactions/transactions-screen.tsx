@@ -9,7 +9,7 @@ import { ChoiceChips } from '@/components/choice-chips';
 import { fabClearance, FloatingActionButton } from '@/components/floating-action-button';
 import { PeriodNavigator } from '@/components/period-navigator';
 import { TransactionRow } from '@/components/transaction-row';
-import { EmptyState, ErrorState, LoadingState, TextField, ThemedText } from '@/components/ui';
+import { Button, EmptyState, ErrorState, LoadingState, TextField, ThemedText } from '@/components/ui';
 import { usePeriod } from '@/state/period-context';
 import { colors, spacing } from '@/theme';
 import { getErrorMessage } from '@/utils/format';
@@ -63,6 +63,7 @@ export default function TransactionsScreen() {
         ListHeaderComponent={(
           <View style={styles.header}>
             <AppHeader title="Transações" subtitle="Toque para editar; segure para excluir." />
+            <Button title="Registrar via WhatsApp" variant="secondary" onPress={() => router.push('/(modals)/whatsapp')} />
             <PeriodNavigator />
             <TextField label="Buscar" placeholder="Descrição da transação" value={search} onChangeText={setSearch} />
             <ChoiceChips
