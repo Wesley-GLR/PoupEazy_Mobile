@@ -1,0 +1,79 @@
+{
+  "locale": "pt-BR",
+  "status": "captured",
+  "note": "As imagens finais usam capturas reais do aplicativo Android, com dados fictícios de uma API local. Apenas o enquadramento e as legendas editoriais foram adicionados; a interface não foi redesenhada. Consulte o status individual de cada captura.",
+  "screenshots": [
+    {
+      "order": 1,
+      "screen": "Painel principal",
+      "route": "/(tabs)/(home)",
+      "plannedFile": "screenshots/phone/01-visao-geral.png",
+      "headline": "Veja suas finanças de perto",
+      "caption": "Acompanhe receitas, despesas e saldo dos seus registros.",
+      "alt": "Painel do PoupEazy com receitas, despesas, saldo, orçamento e lançamentos recentes de uma conta fictícia.",
+      "captureNote": "Selecionar um período com dados fictícios coerentes e aguardar o carregamento dos cartões e do gráfico.",
+      "sourceFile": "screenshots/raw/01-visao-geral.png",
+      "status": "captured"
+    },
+    {
+      "order": 2,
+      "screen": "Transações",
+      "route": "/(tabs)/(transactions)",
+      "plannedFile": "screenshots/phone/02-transacoes.png",
+      "headline": "Organize receitas e despesas",
+      "caption": "Encontre lançamentos por descrição, tipo e período.",
+      "alt": "Lista de transações fictícias do PoupEazy com busca e filtros de receitas e despesas.",
+      "captureNote": "Mostrar uma lista carregada com descrições fictícias. Não expor números bancários, nomes de terceiros nem notificações do aparelho.",
+      "sourceFile": "screenshots/raw/02-transacoes.png",
+      "status": "captured"
+    },
+    {
+      "order": 3,
+      "screen": "Orçamento",
+      "route": "/(tabs)/(budget)",
+      "plannedFile": "screenshots/phone/03-orcamento.png",
+      "headline": "Planeje o orçamento do mês",
+      "caption": "Defina o valor planejado e acompanhe a execução do orçamento.",
+      "alt": "Tela de orçamento mensal do PoupEazy com valores planejados e realizados de demonstração.",
+      "captureNote": "Usar orçamento definido e registros coerentes com o período. A legenda não deve chamar o saldo líquido de despesas brutas.",
+      "sourceFile": "screenshots/raw/03-orcamento.png",
+      "status": "captured"
+    },
+    {
+      "order": 4,
+      "screen": "Metas",
+      "route": "/(tabs)/(goals)",
+      "plannedFile": "screenshots/phone/04-metas.png",
+      "headline": "Acompanhe suas metas",
+      "caption": "Registre aportes e retiradas e consulte o progresso.",
+      "alt": "Metas fictícias do PoupEazy com valor objetivo, prazo e progresso registrado.",
+      "captureNote": "Mostrar metas existentes na conta de demonstração. Os aportes são registros de planejamento e não comprovantes de transferências bancárias.",
+      "sourceFile": "screenshots/raw/04-metas.png",
+      "status": "captured"
+    },
+    {
+      "order": 5,
+      "screen": "Relatórios",
+      "route": "/(tabs)/(more)/reports",
+      "plannedFile": "screenshots/phone/05-relatorios.png",
+      "headline": "Escolha o seu relatório",
+      "caption": "Selecione período, seções e formatos PDF ou CSV para receber por e-mail.",
+      "alt": "Relatório do PoupEazy com cinco seções independentes e formatos PDF e CSV.",
+      "captureNote": "Usar conta de demonstração com o estado de confirmação realmente disponível. Não enviar o relatório para obter a captura nem criar mensagem fictícia de sucesso.",
+      "sourceFile": "screenshots/raw/05-relatorios.png",
+      "status": "captured"
+    },
+    {
+      "order": 6,
+      "screen": "Preferências de e-mail",
+      "route": "/(tabs)/(more)/email-preferences",
+      "plannedFile": "screenshots/phone/06-preferencias-de-email.png",
+      "headline": "Escolha os avisos por e-mail",
+      "caption": "Configure alertas de orçamento, lançamentos e metas conforme sua preferência.",
+      "alt": "Preferências do PoupEazy com e-mail fictício confirmado e alerta configurável de orçamento.",
+      "captureNote": "Capturar controles reais, sem alterar preferências ou disparar e-mails apenas para produzir a imagem. Conferir quais controles ficam visíveis no enquadramento.",
+      "sourceFile": "screenshots/raw/06-preferencias-de-email.png",
+      "status": "captured"
+    }
+  ]
+}

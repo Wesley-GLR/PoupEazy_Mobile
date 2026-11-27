@@ -1,0 +1,13 @@
+{
+  "name": "poupeazy-store-tools",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "build:assets": "node build-assets.cjs",
+    "demo:api": "node demo-api.cjs"
+  },
+  "dependencies": {
+    "@resvg/resvg-js": "2.6.2",
+    "jimp-compact": "0.16.1"
+  }
+}

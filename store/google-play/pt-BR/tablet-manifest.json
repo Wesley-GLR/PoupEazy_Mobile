@@ -1,0 +1,43 @@
+{
+  "status": "captured",
+  "source": "Aplicativo Android real, emulador API 36 / Expo Go 57.0.9, configuração lógica 1600x2560 e densidade 320 (800 dp de largura).",
+  "composition": "A captura física é 1080x2400. Foram retiradas somente as faixas pretas externas ao viewport 1080x1728; a interface foi escalada uniformemente e enquadrada em 1080x1920 com título.",
+  "screenshots": [
+    {
+      "file": "screenshots/tablet/01-visao-geral.png",
+      "sourceFile": "screenshots/raw-tablet/01-visao-geral.png",
+      "headline": "Mais espaço para acompanhar",
+      "alt": "Painel em configuração de tablet, com resumo e gráfico de categorias.",
+      "width": 1080,
+      "height": 1920,
+      "status": "captured"
+    },
+    {
+      "file": "screenshots/tablet/02-orcamento.png",
+      "sourceFile": "screenshots/raw-tablet/02-orcamento.png",
+      "headline": "Planeje o mês com clareza",
+      "alt": "Orçamento em configuração de tablet, com consumo e categorias.",
+      "width": 1080,
+      "height": 1920,
+      "status": "captured"
+    },
+    {
+      "file": "screenshots/tablet/03-metas.png",
+      "sourceFile": "screenshots/raw-tablet/03-metas.png",
+      "headline": "Seus objetivos em foco",
+      "alt": "Metas e seus movimentos em configuração de tablet.",
+      "width": 1080,
+      "height": 1920,
+      "status": "captured"
+    },
+    {
+      "file": "screenshots/tablet/04-relatorios.png",
+      "sourceFile": "screenshots/raw-tablet/04-relatorios.png",
+      "headline": "Monte o seu relatório",
+      "alt": "Período, seções e formatos de relatório em configuração de tablet.",
+      "width": 1080,
+      "height": 1920,
+      "status": "captured"
+    }
+  ]
+}

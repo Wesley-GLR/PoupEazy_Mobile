@@ -1,0 +1,33 @@
+POUPEAZY — FICHA DO GOOGLE PLAY
+
+1. Selecione Português (Brasil), pt-BR. A captura enviada estava em pt-PT.
+
+2. Nome do app: copie pt-BR/title.txt.
+   Descrição breve: copie pt-BR/short-description.txt.
+   Descrição completa: copie pt-BR/full-description.txt.
+
+3. Ícone da aplicação: envie graphics/icon-512.png.
+   Gráfico de funcionalidades: envie graphics/feature-1024x500.png.
+
+4. Imagens de telemóvel/celular: envie as 6 imagens de screenshots/phone,
+   seguindo a ordem numérica dos nomes.
+
+5. Tablet de 7 polegadas: envie as 4 imagens de screenshots/tablet.
+   Tablet de 10 polegadas: use os mesmos 4 arquivos.
+   São telas do app renderizadas em configuração de tablet no emulador;
+   o processo e os dados fictícios estão documentados em CAPTURAS.md.
+
+6. Vídeo, computadores e dobráveis: deixe sem arquivos quando opcionais.
+   Não há vídeo nem capturas desses formatos neste pacote.
+
+7. Salve a ficha e confira a prévia do Google Play.
+
+O ícone enviado à ficha muda a aparência NA LOJA. O ícone instalado no
+celular é separado: app.json já aponta para os novos assets, mas é preciso
+gerar e distribuir um NOVO AAB, com versionCode maior, para aplicá-lo.
+Essa mudança não é aplicada por atualização OTA. Confira o ícone da nova
+versão instalada antes de concluir que o launcher foi atualizado.
+
+Os textos descrevem as funcionalidades atuais do checkout; a versão do app
+distribuída deve conter esses recursos. Nenhuma publicação foi feita por
+estes arquivos. Não envie os SVGs, arquivos raw ou prévias de máscara.

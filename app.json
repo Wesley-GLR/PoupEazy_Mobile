@@ -4,18 +4,17 @@
     "slug": "poupeazy",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/brand/app-icon.png",
     "scheme": "poupeazy",
     "userInterfaceStyle": "light",
     "ios": {
-      "icon": "./assets/expo.icon"
+      "icon": "./assets/brand/app-icon.png"
     },
     "android": {
       "adaptiveIcon": {
-        "backgroundColor": "#F5F5F5",
-        "foregroundImage": "./assets/images/android-icon-foreground.png",
-        "backgroundImage": "./assets/images/android-icon-background.png",
-        "monochromeImage": "./assets/images/android-icon-monochrome.png"
+        "backgroundColor": "#FFFFFF",
+        "foregroundImage": "./assets/brand/android-adaptive-foreground.png",
+        "monochromeImage": "./assets/brand/android-adaptive-monochrome.png"
       },
       "predictiveBackGestureEnabled": true,
       "softwareKeyboardLayoutMode": "resize",

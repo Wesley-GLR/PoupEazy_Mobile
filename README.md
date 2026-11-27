@@ -73,6 +73,18 @@ O vínculo é compartilhado entre o site e o aplicativo para a mesma conta. O re
 O aplicativo já é distribuído em testes internos no Google Play. As configurações finais da
 loja serão concluídas depois da validação das funcionalidades e das páginas públicas.
 
+### Material visual do Google Play
+
+O [guia da ficha da loja](store/google-play/LEIA-ME.md) reúne os textos pt-BR,
+ícone de 512 × 512, banner de 1024 × 500, seis capturas de celular e quatro de
+tablet. As capturas usam o app Android real com dados fictícios locais; sua
+origem e reprodução estão em [CAPTURAS.md](store/google-play/CAPTURAS.md).
+
+`app.json` utiliza a marca do PoupEazy nos ícones global/iOS e nas camadas
+adaptativas e monocromática do Android, em `assets/brand/`. Atualizar o ícone da
+ficha não atualiza o launcher instalado: essa parte exige gerar e distribuir um
+novo AAB. Nenhum build ou envio é realizado pelos scripts das artes.
+
 ### Privacidade e exclusão da conta
 
 O link para a [Política de Privacidade](https://poup-eazy.vercel.app/privacidade) fica disponível no menu
@@ -360,7 +372,7 @@ incompatível do Expo e não deve ser aplicado.
 - A recuperação solicita o envio de um link por e-mail à API. A redefinição acontece no site e, depois, o usuário volta ao app para entrar com a nova senha. O envio depende da configuração de e-mail no backend.
 - Novos cadastros precisam confirmar o e-mail pelo link no navegador antes do primeiro login. Contas antigas continuam com o acesso habitual. O app permite reenviar a confirmação com intervalo de um minuto; nenhum token de sessão é emitido pelo cadastro.
 - O retorno OAuth por aplicativo bancário será validado em um development build.
-- EAS, assinatura, geração do AAB e publicação na Play Store ainda serão configurados.
+- A distribuição em testes internos no Google Play já existe; alterações de ícone exigem um novo AAB. A publicação final e a conferência da ficha continuam como etapas separadas.
 - A tela de notificações permanece fora desta versão mobile.
 - A versão atual foi validada prioritariamente no Android.
 

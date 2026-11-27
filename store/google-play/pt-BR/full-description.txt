@@ -1,0 +1,25 @@
+Organize seus registros financeiros com o PoupEazy. Acompanhe receitas e despesas, planeje orçamentos mensais e registre o progresso das suas metas em um só lugar.
+
+VISÃO GERAL DO PERÍODO
+Consulte receitas, despesas, saldo e despesas por categoria. Escolha o período para acompanhar seus registros e as movimentações recentes.
+
+RECEITAS E DESPESAS
+Cadastre, edite e exclua lançamentos. Use categorias, busque pela descrição e filtre por tipo e período para encontrar o que precisa.
+
+ORÇAMENTOS MENSAIS
+Defina o valor planejado para cada mês e acompanhe a execução do orçamento. Nas preferências de e-mail, escolha se deseja receber avisos de consumo do orçamento e o percentual do primeiro alerta.
+
+METAS FINANCEIRAS
+Crie metas com valor e prazo. Registre aportes e retiradas e acompanhe o progresso. Esses registros organizam seu planejamento; o aplicativo não movimenta dinheiro entre contas.
+
+RELATÓRIOS POR E-MAIL
+Escolha o período, as seções e os formatos PDF ou CSV. Os relatórios são enviados somente ao e-mail confirmado da sua conta. Você pode combinar resumo, categorias, lançamentos, orçamentos e metas conforme sua necessidade.
+
+AVISOS QUE VOCÊ ESCOLHE
+Ative separadamente os alertas de orçamento, receitas, despesas e metas concluídas. Para receitas e despesas, escolha o valor mínimo dos lançamentos que deseja acompanhar por e-mail. Os alertas opcionais começam desativados e exigem um endereço confirmado.
+
+INTEGRAÇÕES OPCIONAIS
+O projeto inclui conexão via Pluggy para importar registros financeiros e vínculo com WhatsApp para registrar despesas com confirmação e consultar relatórios. A disponibilidade dessas integrações depende da configuração do projeto e dos serviços utilizados. As funções de registro manual podem ser usadas sem essas integrações.
+
+SOBRE O PROJETO
+O PoupEazy é um projeto acadêmico de organização de finanças pessoais. Não realiza pagamentos ou transferências, não mantém fundos e não oferece empréstimos nem recomendações de investimento. O uso do aplicativo requer cadastro e conexão com a internet. Os recursos de e-mail dependem da confirmação do endereço e da disponibilidade do serviço de envio.
