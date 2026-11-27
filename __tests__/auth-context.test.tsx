@@ -11,6 +11,8 @@ import type { AuthResponse, Profile } from '@/types/api';
 jest.mock('@/api/services', () => ({
   authService: {
     login: jest.fn(),
+    register: jest.fn(),
+    resendVerification: jest.fn(),
     me: jest.fn(),
     updateProfile: jest.fn(),
     updatePassword: jest.fn(),
@@ -123,6 +125,26 @@ describe('Integração do contexto de autenticação', () => {
     expect(result.current.isAuthenticated).toBe(false);
     expect(result.current.user).toBeNull();
     expect(result.current.profile).toBeNull();
+  });
+
+  test('retorna a exigência de confirmação após cadastro sem iniciar uma sessão', async () => {
+    const registration = { message: 'Confirme seu e-mail.', emailVerificationRequired: true as const };
+    authServiceMock.register.mockResolvedValueOnce(registration);
+    const { result } = renderAuth();
+    await waitFor(() => expect(result.current.loading).toBe(false));
+
+    await act(async () => {
+      await expect(result.current.signUp({
+        email: '  NOVA@Example.COM  ', nome: 'Nova Pessoa', password: 'SenhaNova123!',
+      })).resolves.toEqual(registration);
+    });
+
+    expect(authServiceMock.register).toHaveBeenCalledWith({
+      email: 'nova@example.com', nome: 'Nova Pessoa', password: 'SenhaNova123!',
+    });
+    expect(setSessionTokenMock).not.toHaveBeenCalled();
+    expect(result.current.isAuthenticated).toBe(false);
+    expect(result.current.user).toBeNull();
   });
 
   test('remove token, usuário, perfil e dados privados do cache ao sair', async () => {

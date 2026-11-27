@@ -1,15 +1,18 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link } from 'expo-router';
+import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { View, type ViewStyle } from 'react-native';
 import { z } from 'zod';
 
+import { ApiError } from '@/api/client';
 import { useAuth } from '@/auth/auth-context';
 import { Button, TextField, ThemedText } from '@/components/ui';
 import { colors, spacing } from '@/theme';
 import { getErrorMessage } from '@/utils/format';
 
 import { AuthShell } from './auth-shell';
+import { EmailVerificationNotice } from './email-verification-notice';
 
 const schema = z.object({
   email: z.email('Informe um e-mail válido.'),
@@ -19,7 +22,8 @@ type FormValues = z.infer<typeof schema>;
 
 export default function LoginScreen() {
   const { signIn } = useAuth();
-  const { control, handleSubmit, setError, formState: { errors, isSubmitting } } = useForm<FormValues>({
+  const [pendingEmail, setPendingEmail] = useState<string | null>(null);
+  const { control, handleSubmit, resetField, setError, formState: { errors, isSubmitting } } = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: { email: '', password: '' },
   });
@@ -28,9 +32,18 @@ export default function LoginScreen() {
     try {
       await signIn(email, password);
     } catch (error) {
+      if (error instanceof ApiError && error.status === 403 && error.code === 'EMAIL_NOT_VERIFIED') {
+        resetField('password');
+        setPendingEmail(email.trim().toLowerCase());
+        return;
+      }
       setError('root', { message: getErrorMessage(error, 'E-mail ou senha incorretos.') });
     }
   });
+
+  if (pendingEmail) {
+    return <EmailVerificationNotice email={pendingEmail} onBackToLogin={() => setPendingEmail(null)} />;
+  }
 
   return (
     <AuthShell title="Entre" subtitle="Acesse sua conta e cuide das suas finanças.">

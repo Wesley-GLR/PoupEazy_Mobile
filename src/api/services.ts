@@ -13,6 +13,8 @@ import type {
   Paginated,
   PluggyTransaction,
   Profile,
+  RegistrationResponse,
+  ResendVerificationResponse,
   Transaction,
   TransactionFilters,
   TransactionInput,
@@ -35,7 +37,9 @@ export const authService = {
   login: (email: string, password: string) =>
     api.post<AuthResponse>('/auth/login', { email, password }, { auth: false }),
   register: (input: { email: string; password: string; nome: string; telefone?: string }) =>
-    api.post<AuthResponse>('/auth/register', { ...input, telefone: input.telefone || null }, { auth: false }),
+    api.post<RegistrationResponse>('/auth/register', { ...input, telefone: input.telefone || null }, { auth: false }),
+  resendVerification: (email: string) =>
+    api.post<ResendVerificationResponse>('/auth/resend-verification', { email }, { auth: false }),
   forgotPassword: (email: string) =>
     api.post<ForgotPasswordResponse>('/auth/forgot-password', { email }, { auth: false }),
   resetPassword: (token: string, novaSenha: string) =>

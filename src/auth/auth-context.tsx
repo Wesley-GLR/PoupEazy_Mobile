@@ -3,7 +3,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState, t
 
 import { setUnauthorizedHandler } from '@/api/client';
 import { authService } from '@/api/services';
-import type { AuthUser, ForgotPasswordResponse, Profile } from '@/types/api';
+import type { AuthUser, ForgotPasswordResponse, Profile, RegistrationResponse, ResendVerificationResponse } from '@/types/api';
 
 import { clearSessionToken, getSessionToken, setSessionToken } from './token-storage';
 
@@ -13,7 +13,8 @@ type AuthContextValue = {
   loading: boolean;
   isAuthenticated: boolean;
   signIn: (email: string, password: string) => Promise<void>;
-  signUp: (input: { email: string; password: string; nome: string; telefone?: string }) => Promise<void>;
+  signUp: (input: { email: string; password: string; nome: string; telefone?: string }) => Promise<RegistrationResponse>;
+  resendVerification: (email: string) => Promise<ResendVerificationResponse>;
   signOut: () => Promise<void>;
   forgotPassword: (email: string) => Promise<ForgotPasswordResponse>;
   resetPassword: (token: string, newPassword: string) => Promise<void>;
@@ -72,8 +73,9 @@ export function AuthProvider({ children }: PropsWithChildren) {
       setProfile(session.profile);
     },
     async signUp(input) {
-      await authService.register({ ...input, email: input.email.trim().toLowerCase() });
+      return authService.register({ ...input, email: input.email.trim().toLowerCase() });
     },
+    resendVerification: (email) => authService.resendVerification(email.trim().toLowerCase()),
     signOut: clearSession,
     forgotPassword: (email) => authService.forgotPassword(email.trim().toLowerCase()),
     resetPassword: (token, newPassword) => authService.resetPassword(token, newPassword),

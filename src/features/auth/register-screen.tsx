@@ -1,5 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Link, router } from 'expo-router';
+import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { View, type ViewStyle } from 'react-native';
 import { z } from 'zod';
@@ -10,6 +11,7 @@ import { colors, spacing } from '@/theme';
 import { getErrorMessage } from '@/utils/format';
 
 import { AuthShell } from './auth-shell';
+import { EmailVerificationNotice } from './email-verification-notice';
 
 const schema = z.object({
   name: z.string().trim().min(2, 'Informe seu nome.').max(120, 'Nome muito longo.'),
@@ -24,7 +26,8 @@ type FormValues = z.infer<typeof schema>;
 
 export default function RegisterScreen() {
   const { signUp } = useAuth();
-  const { control, handleSubmit, setError, formState: { errors, isSubmitting } } = useForm<FormValues>({
+  const [pendingEmail, setPendingEmail] = useState<string | null>(null);
+  const { control, handleSubmit, resetField, setError, formState: { errors, isSubmitting } } = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: { name: '', email: '', phone: '', password: '', confirmation: '' },
   });
@@ -32,11 +35,23 @@ export default function RegisterScreen() {
   const onSubmit = handleSubmit(async ({ name, email, phone, password }) => {
     try {
       await signUp({ nome: name, email, telefone: phone || undefined, password });
-      router.replace('/(auth)/login');
+      resetField('password');
+      resetField('confirmation');
+      setPendingEmail(email.trim().toLowerCase());
     } catch (error) {
       setError('root', { message: getErrorMessage(error, 'Não foi possível criar sua conta.') });
     }
   });
+
+  if (pendingEmail) {
+    return (
+      <EmailVerificationNotice
+        email={pendingEmail}
+        initialCooldownSeconds={60}
+        onBackToLogin={() => router.replace('/(auth)/login')}
+      />
+    );
+  }
 
   return (
     <AuthShell title="Registre-se" subtitle="Crie sua conta e comece a economizar.">

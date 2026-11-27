@@ -4,7 +4,7 @@ Esta entrega cobre somente os dois grupos solicitados do `Plano_de_Testes_PoupEa
 
 | Plano | Implementação | Comando no projeto mobile |
 | --- | --- | --- |
-| 6.1 — Integração do contexto de autenticação | Suíte Jest com 7 casos | `npm run test:auth` |
+| 6.1 — Integração do contexto de autenticação | Suíte Jest do contexto de autenticação | `npm run test:auth` |
 | 7.1 — Autenticação de ponta a ponta | Um fluxo Android em `e2e/auth.yaml`, com app, API e PostgreSQL reais | `npm run test:e2e:auth` |
 
 O E2E foi preparado para execução posterior; não foi executado em aparelho/emulador nesta entrega. Revisar o YAML não comprova que o fluxo passou. Os demais grupos do plano ficam para outra etapa.
@@ -18,15 +18,19 @@ npm install
 npm run test:auth
 ```
 
-A suíte exercita o contexto e seus consumidores, com dependências externas controladas. Não precisa de Android nem de banco de dados. O resultado esperado é uma suíte aprovada com 7 casos.
+A suíte exercita o contexto e seus consumidores, com dependências externas controladas. Não precisa de Android nem de banco de dados. Inclui cadastro sem autenticação automática e limpeza de sessão após trocar a senha.
 
-Validação desta entrega: os 7 casos de autenticação passaram; `npm test` passou com 44 testes
-em 5 suítes. TypeScript (`npx tsc --noEmit`) e lint (`npm run lint`) também passaram.
+A confirmação de cadastro e a recuperação têm testes de interface separados. Para executar os testes relevantes de autenticação:
+
+```powershell
+npx jest --runInBand --runTestsByPath __tests__/auth-context.test.tsx __tests__/email-verification.test.tsx __tests__/forgot-password-screen.test.tsx __tests__/api-services.test.ts
+```
 
 ## Pré-requisitos do E2E
 
 - Node/npm e o repositório `PoupEazy_BackEnd` ao lado deste projeto.
 - PostgreSQL local e um banco **exclusivo de testes**, vazio na primeira preparação.
+- Uma conta exclusiva de testes já confirmada pela API/site, para validar login e restauração da sessão. O roteiro também cria uma conta nova pendente e verifica que ela não consegue entrar antes de confirmar o e-mail.
 - Android SDK, `adb` no `PATH` e JDK compatível com o build Android desta versão do Expo. Siga a [configuração oficial do ambiente Expo](https://docs.expo.dev/get-started/set-up-your-environment/).
 - Emulador iniciado ou aparelho Android conectado por USB com depuração autorizada. `adb devices` deve mostrar o dispositivo como `device`. Para simplificar, mantenha somente um dispositivo conectado.
 - Maestro CLI no `PATH`. Siga a [instalação oficial do Maestro para Windows](https://docs.maestro.dev/maestro-cli/how-to-install-maestro-cli) e confira `maestro --help`. O Maestro requer Java 17 ou superior; isso não substitui o requisito de compatibilidade do build Expo.
@@ -72,7 +76,7 @@ npm start
 
 `db:init` aplica `db/schema.sql`, que já contém as tabelas e migrações necessárias para um banco novo. As variáveis acima sobrepõem os valores carregados de `.env`. Não use a API publicada no Render nem credenciais de produção neste roteiro.
 
-`NODE_ENV=test` não permite obter tokens de recuperação pela API. Para testar a solicitação com os endereços descartáveis deste roteiro, use uma instância de testes com transporte de e-mail capturado pelo harness do backend, sem enviar para o Gmail real. O envio precisa estar habilitado nessa instância; caso contrário a API responde que o serviço está indisponível. Credenciais da Pluggy não são necessárias.
+`NODE_ENV=test` não permite obter tokens de recuperação ou confirmação pela API pública. Para testar as solicitações com os endereços descartáveis deste roteiro, use uma instância de testes com transporte de e-mail capturado pelo harness do backend, sem enviar para o Gmail real. O envio precisa estar habilitado nessa instância; caso contrário a API responde que o serviço está indisponível. Prepare a conta confirmada usando o link capturado por esse transporte e a página/endpoint de confirmação, sem alterar as regras de login. Credenciais da Pluggy não são necessárias.
 
 ## 2. Instalar o app e manter o Metro — terminal 2
 
@@ -103,23 +107,25 @@ Abra o app uma vez e confira a tela de login. No primeiro início, pode ser nece
 Set-Location 'C:\Users\idjar\Documents\GitHub\PoupEazy_Mobile'
 Invoke-RestMethod 'http://127.0.0.1:3002/api/health'
 adb devices
-npm run test:e2e:auth
+maestro test --test-output-dir .tmp/maestro -e AUTH_VERIFIED_EMAIL=conta-confirmada@example.com -e AUTH_VERIFIED_PASSWORD=SenhaExclusivaTeste123! e2e/auth.yaml
 ```
 
-O healthcheck deve retornar `status: ok`. O comando npm executa:
+O healthcheck deve retornar `status: ok`. Substitua os parâmetros acima pelas credenciais da conta confirmada no banco de testes. São parâmetros do [Maestro](https://docs.maestro.dev/maestro-flows/flow-control-and-logic/parameters-and-constants), não variáveis públicas embutidas no aplicativo. Não use credenciais pessoais ou de produção. O script npm também aceita esses parâmetros:
 
 ```powershell
-maestro test --test-output-dir .tmp/maestro e2e/auth.yaml
+npm run test:e2e:auth -- -e AUTH_VERIFIED_EMAIL=conta-confirmada@example.com -e AUTH_VERIFIED_PASSWORD=SenhaExclusivaTeste123!
 ```
 
 O fluxo verifica, em sequência:
 
 1. Abertura sem sessão e rejeição de credenciais inválidas.
-2. Cadastro, retorno ao login e acesso ao painel com a conta criada.
-3. Sessão preservada ao fechar/reabrir o app; depois do logout, reabertura permanece na tela de login.
+2. Cadastro sem login automático, aviso de confirmação e bloqueio do login da conta nova pendente.
+3. Login com a conta de testes já confirmada; sessão preservada ao fechar/reabrir o app. Depois do logout, a reabertura permanece na tela de login.
 4. Solicitação de recuperação, mensagem genérica sem revelar se a conta existe e retorno à tela de login.
 
-Os fluxos de cadastro, login e sessão usam API e banco reais. Somente o transporte de e-mail deve ser capturado no servidor de testes. Cada execução cria uma conta `Usuario E2E` com e-mail `e2e.auth.<timestamp>.<aleatorio>@example.com` e senha sintética `E2eInicial123!`; não reutilize essa senha fora do banco de testes.
+Os fluxos de cadastro, login e sessão usam API e banco reais. Somente o transporte de e-mail deve ser capturado no servidor de testes. Cada execução cria uma conta pendente `Usuario E2E` com e-mail `e2e.auth.<timestamp>.<aleatorio>@example.com` e senha sintética `E2eInicial123!`; não reutilize essa senha fora do banco de testes. A conta confirmada passada por parâmetro é reutilizada e o roteiro não altera sua senha.
+
+A confirmação completa pelo e-mail também precisa de verificação integrada separada: crie uma conta de testes, abra o link recebido, confirme no site e volte ao app para entrar. Confira que o link só pode ser usado uma vez e que um link expirado oferece reenvio. Uma conta criada antes da exigência de confirmação deve continuar acessando normalmente.
 
 O reset completo pelo link do e-mail precisa de uma verificação integrada separada: solicite a recuperação para uma caixa de testes que você controla, confira o link recebido e abra a página no navegador. Defina a nova senha, volte ao app, confirme que a senha antiga é recusada e que a nova funciona. Reutilizar o link ou usar um link expirado deve falhar. Este YAML não acessa a caixa de e-mail nem comprova a entrega de mensagens.
 

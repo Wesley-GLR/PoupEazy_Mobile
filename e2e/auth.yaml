@@ -1,5 +1,6 @@
 # Plano de Testes, seção 7.1. Executar somente contra API/banco de teste.
 # Requer API/banco de teste e transporte de e-mail capturado no servidor.
+# Passe AUTH_VERIFIED_EMAIL e AUTH_VERIFIED_PASSWORD de uma conta de testes já confirmada.
 # A conta é criada pela interface e permanece no banco descartável após o fluxo.
 appId: com.wesleyglr.poupeazy
 name: Autenticação de ponta a ponta
@@ -68,10 +69,22 @@ name: Autenticação de ponta a ponta
 - tapOn: Criar conta
 - extendedWaitUntil:
     visible:
-      id: login-email
+      id: verification-pending
     timeout: 60000
+- assertVisible: Confirme seu e-mail
+- assertNotVisible: Painel principal
+- scrollUntilVisible:
+    element:
+      id: verification-back-to-login
+    direction: DOWN
+- tapOn:
+    id: verification-back-to-login
+- extendedWaitUntil:
+    visible:
+      id: login-email
+    timeout: 10000
 
-# Login válido e carregamento do dashboard com dados da API real.
+# A conta nova deve continuar sem sessão até confirmar o cadastro no site.
 - tapOn:
     id: login-email
 - eraseText
@@ -86,9 +99,35 @@ name: Autenticação de ponta a ponta
     direction: DOWN
 - tapOn: Entrar
 - extendedWaitUntil:
+    visible:
+      id: verification-pending
+    timeout: 60000
+- assertNotVisible: Painel principal
+- scrollUntilVisible:
+    element:
+      id: verification-back-to-login
+    direction: DOWN
+- tapOn:
+    id: verification-back-to-login
+- assertVisible:
+    id: login-email
+
+# Use uma conta já confirmada para validar login e sessão sem bypass no app.
+- tapOn:
+    id: login-email
+- eraseText
+- inputText: ${AUTH_VERIFIED_EMAIL}
+- tapOn:
+    id: login-password
+- inputText: ${AUTH_VERIFIED_PASSWORD}
+- hideKeyboard
+- scrollUntilVisible:
+    element: Entrar
+    direction: DOWN
+- tapOn: Entrar
+- extendedWaitUntil:
     visible: Painel principal
     timeout: 60000
-- assertVisible: Bem-vindo de volta, Usuario\.
 - assertNotVisible:
     id: login-email
 
@@ -99,11 +138,10 @@ name: Autenticação de ponta a ponta
 - extendedWaitUntil:
     visible: Painel principal
     timeout: 60000
-- assertVisible: Bem-vindo de volta, Usuario\.
 - assertNotVisible:
     id: login-email
 - tapOn: Mais
-- assertVisible: ${output.authEmail.replace(/[.]/g, '[.]')}
+- assertVisible: ${AUTH_VERIFIED_EMAIL.replace(/[.]/g, '[.]')}
 - tapOn: '.*Meu perfil.*'
 - scrollUntilVisible:
     element:
@@ -136,7 +174,7 @@ name: Autenticação de ponta a ponta
 - assertVisible: Recuperar senha
 - tapOn:
     id: forgot-email
-- inputText: ${output.authEmail}
+- inputText: ${AUTH_VERIFIED_EMAIL}
 - hideKeyboard
 - scrollUntilVisible:
     element: Enviar link de recuperação

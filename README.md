@@ -13,7 +13,7 @@ movimentações por Open Finance.
 
 ## Funcionalidades
 
-- **Autenticação** — Cadastro, login e restauração segura da sessão com JWT armazenado no aparelho
+- **Autenticação** — Cadastro com confirmação de e-mail para novas contas, reenvio do link, login e restauração segura da sessão com JWT armazenado no aparelho
 - **Painel (Dashboard)** — Resumo mensal de receitas, despesas, saldo, orçamento, transações recentes e despesas por categoria
 - **Transações** — CRUD completo de receitas e despesas, filtros por período e tipo e associação automática ao orçamento mensal
 - **Categorias** — Consulta às categorias do sistema e gerenciamento das categorias personalizadas do usuário
@@ -339,6 +339,7 @@ incompatível do Expo e não deve ser aplicado.
 ## Limitações e próximas etapas
 
 - A recuperação solicita o envio de um link por e-mail à API. A redefinição acontece no site e, depois, o usuário volta ao app para entrar com a nova senha. O envio depende da configuração de e-mail no backend.
+- Novos cadastros precisam confirmar o e-mail pelo link no navegador antes do primeiro login. Contas antigas continuam com o acesso habitual. O app permite reenviar a confirmação com intervalo de um minuto; nenhum token de sessão é emitido pelo cadastro.
 - O retorno OAuth por aplicativo bancário será validado em um development build.
 - EAS, assinatura, geração do AAB e publicação na Play Store ainda serão configurados.
 - A tela de notificações permanece fora desta versão mobile.

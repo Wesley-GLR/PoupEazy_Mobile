@@ -3,6 +3,8 @@ export type MoneyValue = string | number;
 export interface AuthUser {
   id: string;
   email: string;
+  email_verificado?: boolean;
+  email_verificacao_obrigatoria?: boolean;
   criado_em?: string;
 }
 
@@ -21,6 +23,15 @@ export interface AuthResponse {
 }
 
 export interface ForgotPasswordResponse {
+  message: string;
+}
+
+export interface RegistrationResponse {
+  message: string;
+  emailVerificationRequired: true;
+}
+
+export interface ResendVerificationResponse {
   message: string;
 }
 

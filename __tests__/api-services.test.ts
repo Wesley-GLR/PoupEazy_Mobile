@@ -1,12 +1,3 @@
-jest.mock('@/api/client', () => ({
-  api: {
-    get: jest.fn(),
-    post: jest.fn(),
-    patch: jest.fn(),
-    delete: jest.fn(),
-  },
-}));
-
 import { api } from '@/api/client';
 import {
   authService,
@@ -15,6 +6,15 @@ import {
   transactionsService,
 } from '@/api/services';
 import type { Paginated, Transaction } from '@/types/api';
+
+jest.mock('@/api/client', () => ({
+  api: {
+    get: jest.fn(),
+    post: jest.fn(),
+    patch: jest.fn(),
+    delete: jest.fn(),
+  },
+}));
 
 const getMock = api.get as jest.Mock;
 const postMock = api.post as jest.Mock;
@@ -53,9 +53,10 @@ describe('API service contracts', () => {
   });
 
   test('registration normalizes an empty optional phone to null', async () => {
-    postMock.mockResolvedValue({ token: 'token', user: {}, profile: null });
+    const registration = { message: 'Confirme seu e-mail.', emailVerificationRequired: true };
+    postMock.mockResolvedValue(registration);
 
-    await authService.register({
+    const response = await authService.register({
       email: 'pessoa@example.com',
       password: 'senha-segura',
       nome: 'Pessoa',
@@ -71,6 +72,19 @@ describe('API service contracts', () => {
         telefone: null,
       },
       { auth: false },
+    );
+    expect(response).toEqual(registration);
+    expect(response).not.toHaveProperty('token');
+  });
+
+  test('verification resend accepts a generic response without requiring a session', async () => {
+    const response = { message: 'Se houver cadastro pendente, enviaremos um link.' };
+    postMock.mockResolvedValue(response);
+
+    await expect(authService.resendVerification('pessoa@example.com')).resolves.toEqual(response);
+
+    expect(postMock).toHaveBeenCalledWith(
+      '/auth/resend-verification', { email: 'pessoa@example.com' }, { auth: false },
     );
   });
 
