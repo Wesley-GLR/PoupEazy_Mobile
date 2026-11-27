@@ -6,16 +6,19 @@ import type {
   EmailPreferences,
   EmailPreferencesInput,
   GoalInput,
+  ReportEmailInput,
   TransactionFilters,
   TransactionInput,
 } from '@/types/api';
 
 import {
+  authService,
   budgetsService,
   categoriesService,
   emailPreferencesService,
   goalsService,
   integrationsService,
+  reportsService,
   transactionsService,
 } from './services';
 
@@ -26,7 +29,24 @@ export const queryKeys = {
   goals: ['goals'] as const,
   integrations: ['integrations'] as const,
   emailPreferences: ['email-preferences'] as const,
+  reportAccount: ['report-account'] as const,
 };
+
+export function useReportAccount() {
+  return useQuery({
+    queryKey: queryKeys.reportAccount,
+    queryFn: authService.me,
+    staleTime: 0,
+    refetchOnWindowFocus: 'always',
+  });
+}
+
+export function useSendEmailReport() {
+  return useMutation({
+    mutationFn: (input: ReportEmailInput) => reportsService.sendEmail(input),
+    retry: false,
+  });
+}
 
 export function useEmailPreferences() {
   return useQuery({

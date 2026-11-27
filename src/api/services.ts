@@ -16,6 +16,8 @@ import type {
   PluggyTransaction,
   Profile,
   RegistrationResponse,
+  ReportEmailInput,
+  ReportEmailResponse,
   ResendVerificationResponse,
   Transaction,
   TransactionFilters,
@@ -61,6 +63,15 @@ export const emailPreferencesService = {
     alerta_receita_valor_minimo: input.alerta_receita_valor_minimo,
     alerta_meta_concluida_ativo: input.alerta_meta_concluida_ativo,
   }),
+};
+
+export const reportsService = {
+  sendEmail: (input: ReportEmailInput) => api.post<ReportEmailResponse>('/relatorios/email', {
+    data_inicio: input.data_inicio,
+    data_fim: input.data_fim,
+    secoes: [...input.secoes],
+    formatos: [...input.formatos],
+  }, { timeoutMs: 120_000 }),
 };
 
 export const transactionsService = {

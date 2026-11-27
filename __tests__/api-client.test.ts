@@ -103,6 +103,13 @@ describe('API client contract', () => {
     expect(unauthorizedHandler).toHaveBeenCalledTimes(1);
   });
 
+  test('preserves the retry interval returned by the report endpoint', async () => {
+    fetchMock.mockResolvedValue(response(429, '{"error":"Aguarde","code":"REPORT_COOLDOWN","retry_after_seconds":37}'));
+    await expect(apiRequest('/relatorios/email')).rejects.toMatchObject({
+      status: 429, code: 'REPORT_COOLDOWN', retryAfterSeconds: 37,
+    });
+  });
+
   test('maps connectivity failures to a stable network error', async () => {
     const originalError = new Error('offline');
     fetchMock.mockRejectedValue(originalError);

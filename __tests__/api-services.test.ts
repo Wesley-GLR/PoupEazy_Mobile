@@ -4,6 +4,7 @@ import {
   categoriesService,
   emailPreferencesService,
   integrationsService,
+  reportsService,
   transactionsService,
 } from '@/api/services';
 import type { Paginated, Transaction } from '@/types/api';
@@ -148,6 +149,22 @@ describe('API service contracts', () => {
     expect(getMock).toHaveBeenCalledWith(
       '/despesas?q=mercado+%26+casa&tipo=despesa&page=2&limit=10',
     );
+  });
+
+  test('report requests use only selection parameters and a 120 second timeout', async () => {
+    const input = {
+      data_inicio: '2026-11-01', data_fim: '2026-11-30',
+      secoes: ['resumo', 'categorias'] as ('resumo' | 'categorias')[], formatos: ['pdf'] as 'pdf'[],
+      destinatario: 'outra@example.com', transacoes: [{ valor: 1 }],
+    };
+    postMock.mockResolvedValue({ message: 'Aceito pelo serviço de e-mail.', retry_after_seconds: 60 });
+
+    await reportsService.sendEmail(input);
+
+    expect(postMock).toHaveBeenCalledWith('/relatorios/email', {
+      data_inicio: input.data_inicio, data_fim: input.data_fim,
+      secoes: ['resumo', 'categorias'], formatos: ['pdf'],
+    }, { timeoutMs: 120_000 });
   });
 
   test('legacy transaction arrays are adapted to the paginated contract', async () => {

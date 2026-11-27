@@ -9,6 +9,7 @@ export default function MoreLayout() {
       <Stack.Screen name="open-finance" options={{ title: 'Open Finance' }} />
       <Stack.Screen name="profile" options={{ title: 'Meu perfil' }} />
       <Stack.Screen name="email-preferences" options={{ title: 'Preferências de e-mail' }} />
+      <Stack.Screen name="reports" options={{ title: 'Relatórios' }} />
     </Stack>
   );
 }

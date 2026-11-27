@@ -151,3 +151,22 @@ A tela usa `Switch` nativo do `@expo/ui`; o teste Jest substitui somente essa fr
 6. Desligue os alertas novamente ao encerrar o teste. A tela não comprova entrega, deduplicação ou processamento dos avisos; esses cenários pertencem aos testes do worker/backend com captura de e-mail.
 
 Este roteiro visual ainda precisa ser executado em dispositivo; os testes Jest não comprovam a renderização do controle nativo.
+
+## Relatórios modulares
+
+Os testes locais abaixo não enviam mensagens reais nem acessam a API publicada:
+
+```powershell
+npx jest --runInBand --runTestsByPath __tests__/report-form.test.ts __tests__/reports-screen.test.tsx __tests__/api-services.test.ts __tests__/api-client.test.ts
+```
+
+Para QA em instalação de testes/Expo Go SDK 57, mantenha o backend em ambiente com transporte capturado:
+
+1. Abra **Mais → Relatórios**. Confira período atual do app, Resumo/Categorias e PDF marcados; a abertura não deve enviar nada.
+2. Troque datas no calendário nativo e alterne seções/formatos independentemente. Confira labels, texto ampliado, rolagem, cancelamento do calendário e ausência de mudança de dia por fuso. Ao voltar ao dashboard, o filtro original deve permanecer.
+3. Em conta antiga sem e-mail confirmado, faça escolhas, solicite a confirmação, confirme no navegador e volte. O email deve atualizar sem logout e o rascunho deve continuar igual.
+4. Com conta confirmada, teste dia único, 29/02 bissexto, limite de 366 dias e rejeição de intervalo invertido/367 dias. Não permita enviar sem seção ou sem formato.
+5. Simule no backend de testes limite de registros, falha de serviço e resultado incerto. O app não deve truncar, apagar escolhas ou reenviar automaticamente. Confira o intervalo retornado nos erros 429 e a orientação de verificar a caixa antes de repetir um envio incerto.
+6. Confira que a resposta positiva diz aceitação pelo serviço de e-mail, sem afirmar entrega na caixa. A renderização/conteúdo dos anexos pertence à QA do gerador no backend; não é comprovada por estes testes da interface.
+
+O calendário e os checkboxes nativos são substituídos nos testes Jest; esta verificação visual ainda precisa ser executada em dispositivo.

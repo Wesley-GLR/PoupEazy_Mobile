@@ -21,6 +21,7 @@ movimentações por Open Finance.
 - **Orçamentos Mensais** — Planejamento do limite de gastos e comparação entre o valor planejado e o valor realizado
 - **Perfil** — Atualização de dados pessoais, alteração de senha e encerramento da sessão
 - **Preferências de e-mail** — Ativação independente dos alertas de orçamento, despesas, receitas e metas concluídas, com confirmação do endereço de recebimento
+- **Relatórios por e-mail** — Período próprio, seções independentes e formatos PDF/CSV, enviados ao e-mail confirmado da conta
 - **Open Finance** — Conexão com instituições via Pluggy, sincronização pelo backend e deduplicação das transações importadas
 - **Chatbot WhatsApp** — Vínculo da conta em Transações, registro de despesas com confirmação e consulta de relatórios (RF02)
 - **Experiência mobile** — Cinco abas principais, formulários em modais, atualização por gesto e estados de carregamento, erro e conteúdo vazio
@@ -279,7 +280,7 @@ development build Android e será validado antes da fase de publicação.
 | RF03 | Metas e gastos | Implementado |
 | RF04 | Integração Open Finance | Implementado com Pluggy |
 | RF05 | Categorização automática | Parcial, aplicada às importações bancárias |
-| RF06 | Relatórios financeiros | Implementado no dashboard mensal |
+| RF06 | Relatórios financeiros | Dashboard e relatórios modulares em PDF/CSV enviados por e-mail |
 | RF07 | Notificações e alertas | Preferências dos alertas de orçamento, lançamentos e metas por e-mail disponíveis; central de notificações adiada |
 | RF08 | Orçamentos mensais | Implementado |
 | RNF01 | Interface intuitiva | Implementado com navegação e layout próprios para mobile |
@@ -339,6 +340,9 @@ incompatível do Expo e não deve ser aplicado.
 
 ## Limitações e próximas etapas
 
+- Em **Mais → Relatórios**, o período começa igual ao selecionado no app, com Resumo/Categorias e PDF marcados. Alterar datas ou módulos não muda os filtros das outras telas. São permitidas datas reais de 2000 a 2100 e até 366 dias inclusivos. PDF consolida as seções escolhidas; CSV gera um arquivo por seção.
+- Relatórios exigem e-mail confirmado e são enviados somente à própria conta. O servidor rejeita pedidos acima de 1.000 lançamentos confirmados, 200 metas quando selecionadas ou 5 MiB em até seis anexos; o app preserva as escolhas para ajustar o pedido. A seção de orçamento compara planejado mensal integral com despesas brutas do recorte; metas mostram a posição atual e movimentações do período, sem reconstruir posição histórica.
+- O envio de relatórios aguarda a aceitação pelo serviço de e-mail, com timeout de 120s e sem repetição automática. Aceitação não garante chegada à caixa de entrada. Após sucesso, resultado incerto ou limitação de pedidos, a tela respeita o intervalo de envio; em falha de rede/timeout, orienta conferir o e-mail antes de repetir.
 - Em **Mais → Preferências de e-mail**, todos os tipos de alerta começam desligados. O percentual de orçamento é 80%, e os limites independentes de despesas e receitas são R$ 100,00. Ativar qualquer tipo exige e-mail confirmado; contas antigas continuam acessando o app enquanto confirmam o endereço. A tela permite solicitar o link sem encerrar a sessão e atualiza o estado ao retornar ao app.
 - Os alertas consideram despesas confirmadas do orçamento do mês atual no horário de Brasília, sem descontar receitas; aportes em metas entram como despesas. Há um aviso ao atingir o percentual e outro ao ultrapassar 100%, no máximo um de cada por mês. Quando ambos são atingidos juntos, o envio é consolidado. Desligar, religar ou mudar o percentual não reinicia os avisos do mês.
 - Despesas e receitas avisam sobre novos lançamentos confirmados registrados no PoupEazy, inclusive importações, quando o valor for igual ou superior ao limite escolhido. Metas avisam uma vez ao atingir o valor planejado ou ao serem marcadas como concluídas. Esses três alertas não são retroativos à ativação. Os limites monetários aceitam R$ 0,01 a R$ 9.999.999.999,99, com até duas casas decimais; entradas ambíguas como `1,234` são rejeitadas em vez de reinterpretadas como milhares.

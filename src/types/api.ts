@@ -48,6 +48,21 @@ export interface EmailPreferences {
 
 export type EmailPreferencesInput = Omit<EmailPreferences, 'email_verificado'>;
 
+export type ReportSection = 'resumo' | 'transacoes' | 'categorias' | 'orcamentos' | 'metas';
+export type ReportFormat = 'pdf' | 'csv';
+
+export interface ReportEmailInput {
+  data_inicio: string;
+  data_fim: string;
+  secoes: ReportSection[];
+  formatos: ReportFormat[];
+}
+
+export interface ReportEmailResponse {
+  message: string;
+  retry_after_seconds: number;
+}
+
 export interface WhatsAppLinkStatus {
   habilitado: boolean;
   vinculado: boolean;

@@ -4,7 +4,7 @@ import { clearSessionToken, getSessionToken } from '@/auth/token-storage';
 
 import { API_BASE_URL, DEFAULT_REQUEST_TIMEOUT_MS } from './config';
 
-type ApiErrorPayload = { error?: string; code?: string; details?: unknown };
+type ApiErrorPayload = { error?: string; code?: string; details?: unknown; retry_after_seconds?: unknown };
 type UnauthorizedHandler = () => void | Promise<void>;
 
 let unauthorizedHandler: UnauthorizedHandler | undefined;
@@ -15,6 +15,7 @@ export class ApiError extends Error {
     message: string,
     public readonly code?: string,
     public readonly details?: unknown,
+    public readonly retryAfterSeconds?: number,
   ) {
     super(message);
     this.name = 'ApiError';
@@ -76,6 +77,8 @@ export async function apiRequest<T>(path: string, options: ApiRequestOptions = {
         data?.error || `A API respondeu com status ${response.status}.`,
         data?.code,
         data?.details,
+        typeof data?.retry_after_seconds === 'number' && Number.isFinite(data.retry_after_seconds)
+          && data.retry_after_seconds >= 0 ? data.retry_after_seconds : undefined,
       );
     }
     return payload as T;
