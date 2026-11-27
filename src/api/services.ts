@@ -5,6 +5,7 @@ import type {
   BudgetInput,
   Category,
   CategoryInput,
+  ForgotPasswordResponse,
   Goal,
   GoalInput,
   Integration,
@@ -36,7 +37,7 @@ export const authService = {
   register: (input: { email: string; password: string; nome: string; telefone?: string }) =>
     api.post<AuthResponse>('/auth/register', { ...input, telefone: input.telefone || null }, { auth: false }),
   forgotPassword: (email: string) =>
-    api.post<{ message?: string; resetToken?: string }>('/auth/forgot-password', { email }, { auth: false }),
+    api.post<ForgotPasswordResponse>('/auth/forgot-password', { email }, { auth: false }),
   resetPassword: (token: string, novaSenha: string) =>
     api.post<void>('/auth/reset-password', { token, novaSenha }, { auth: false }),
   updatePassword: (novaSenha: string) => api.patch<void>('/auth/password', { novaSenha }),

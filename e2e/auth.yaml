@@ -1,5 +1,5 @@
 # Plano de Testes, seção 7.1. Executar somente contra API/banco de teste.
-# Requer build Android debug (__DEV__) e backend NODE_ENV=test para o reset local.
+# Requer API/banco de teste e transporte de e-mail capturado no servidor.
 # A conta é criada pela interface e permanece no banco descartável após o fluxo.
 appId: com.wesleyglr.poupeazy
 name: Autenticação de ponta a ponta
@@ -128,7 +128,7 @@ name: Autenticação de ponta a ponta
     timeout: 60000
 - assertNotVisible: Painel principal
 
-# Recuperação local completa: a API devolve resetToken ao build debug.
+# A recuperação confirma a solicitação; o link recebido é concluído no site.
 - scrollUntilVisible:
     element: Esqueci minha senha
     direction: DOWN
@@ -139,76 +139,21 @@ name: Autenticação de ponta a ponta
 - inputText: ${output.authEmail}
 - hideKeyboard
 - scrollUntilVisible:
-    element: Continuar
+    element: Enviar link de recuperação
     direction: DOWN
-- tapOn: Continuar
+- tapOn: Enviar link de recuperação
 - extendedWaitUntil:
     visible:
-      id: reset-password
+      id: forgot-request-sent
     timeout: 60000
-- tapOn:
+- assertVisible: Confira seu e-mail
+- assertNotVisible:
     id: reset-password
-- inputText: E2eAtualizada456!
-- hideKeyboard
 - scrollUntilVisible:
     element:
-      id: reset-confirmation
+      text: Voltar para o login
     direction: DOWN
-- tapOn:
-    id: reset-confirmation
-- inputText: E2eAtualizada456!
-- hideKeyboard
-- scrollUntilVisible:
-    element: Salvar nova senha
-    direction: DOWN
-- tapOn: Salvar nova senha
-- extendedWaitUntil:
-    visible:
-      id: login-email
-    timeout: 60000
-
-# A senha anterior deve ser recusada após a redefinição.
-- tapOn:
-    id: login-email
-- eraseText
-- inputText: ${output.authEmail}
-- tapOn:
-    id: login-password
-- eraseText
-- inputText: E2eInicial123!
-- hideKeyboard
-- scrollUntilVisible:
-    element: Entrar
-    direction: DOWN
-- tapOn: Entrar
-- extendedWaitUntil:
-    visible: 'E-mail ou senha invalidos\.'
-    timeout: 60000
-- assertNotVisible: Painel principal
-
-# A nova senha deve autenticar a mesma conta; concluir sem sessão ativa.
-- tapOn:
-    id: login-password
-- eraseText
-- inputText: E2eAtualizada456!
-- hideKeyboard
-- scrollUntilVisible:
-    element: Entrar
-    direction: DOWN
-- tapOn: Entrar
-- extendedWaitUntil:
-    visible: Painel principal
-    timeout: 60000
-- tapOn: Mais
-- assertVisible: ${output.authEmail.replace(/[.]/g, '[.]')}
-- tapOn: '.*Meu perfil.*'
-- scrollUntilVisible:
-    element:
-      text: Sair da conta
-    direction: DOWN
-- tapOn: Sair da conta
-- assertVisible: Sair da conta\?
-- tapOn: '(?i)sair'
+- tapOn: Voltar para o login
 - extendedWaitUntil:
     visible:
       id: login-email

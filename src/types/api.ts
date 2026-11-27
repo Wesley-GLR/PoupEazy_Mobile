@@ -20,6 +20,10 @@ export interface AuthResponse {
   profile: Profile | null;
 }
 
+export interface ForgotPasswordResponse {
+  message: string;
+}
+
 export interface WhatsAppLinkStatus {
   habilitado: boolean;
   vinculado: boolean;

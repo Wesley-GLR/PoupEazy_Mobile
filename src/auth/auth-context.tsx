@@ -3,7 +3,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useState, t
 
 import { setUnauthorizedHandler } from '@/api/client';
 import { authService } from '@/api/services';
-import type { AuthUser, Profile } from '@/types/api';
+import type { AuthUser, ForgotPasswordResponse, Profile } from '@/types/api';
 
 import { clearSessionToken, getSessionToken, setSessionToken } from './token-storage';
 
@@ -15,7 +15,7 @@ type AuthContextValue = {
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (input: { email: string; password: string; nome: string; telefone?: string }) => Promise<void>;
   signOut: () => Promise<void>;
-  forgotPassword: (email: string) => Promise<{ message?: string; resetToken?: string }>;
+  forgotPassword: (email: string) => Promise<ForgotPasswordResponse>;
   resetPassword: (token: string, newPassword: string) => Promise<void>;
   updateProfile: (input: Partial<Pick<Profile, 'nome' | 'telefone'>>) => Promise<void>;
   updatePassword: (newPassword: string) => Promise<void>;
@@ -81,7 +81,10 @@ export function AuthProvider({ children }: PropsWithChildren) {
       const updated = await authService.updateProfile(input);
       setProfile(updated);
     },
-    updatePassword: (newPassword) => authService.updatePassword(newPassword),
+    async updatePassword(newPassword) {
+      await authService.updatePassword(newPassword);
+      await clearSession();
+    },
   } as AuthContextValue), [clearSession, loading, profile, user]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

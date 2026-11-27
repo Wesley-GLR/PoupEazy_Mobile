@@ -13,6 +13,7 @@ jest.mock('@/api/services', () => ({
     login: jest.fn(),
     me: jest.fn(),
     updateProfile: jest.fn(),
+    updatePassword: jest.fn(),
   },
 }));
 
@@ -71,6 +72,7 @@ describe('Integração do contexto de autenticação', () => {
     clearSessionTokenMock.mockResolvedValue(undefined);
     authServiceMock.login.mockResolvedValue(session);
     authServiceMock.me.mockResolvedValue({ user: session.user, profile });
+    authServiceMock.updatePassword.mockResolvedValue(undefined);
   });
 
   afterEach(() => {
@@ -143,6 +145,44 @@ describe('Integração do contexto de autenticação', () => {
     expect(result.current.profile).toBeNull();
     expect(queryClient.getQueryData(['despesas', session.user.id])).toBeUndefined();
     expect(queryClient.getQueryCache().getAll()).toHaveLength(0);
+  });
+
+  test('encerra a sessão e limpa dados privados após a troca de senha', async () => {
+    getSessionTokenMock.mockResolvedValueOnce(session.token);
+    const { result } = renderAuth();
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    queryClient.setQueryData(['despesas', session.user.id], [{ id: 'despesa-privada' }]);
+
+    await act(async () => {
+      await result.current.updatePassword('NovaSenha123!');
+    });
+
+    expect(authServiceMock.updatePassword).toHaveBeenCalledWith('NovaSenha123!');
+    expect(clearSessionTokenMock).toHaveBeenCalledTimes(1);
+    expect(result.current.isAuthenticated).toBe(false);
+    expect(result.current.user).toBeNull();
+    expect(result.current.profile).toBeNull();
+    expect(queryClient.getQueryCache().getAll()).toHaveLength(0);
+  });
+
+  test('preserva a sessão e o cache quando a troca de senha falha', async () => {
+    const error = new Error('Não foi possível atualizar a senha.');
+    authServiceMock.updatePassword.mockRejectedValueOnce(error);
+    getSessionTokenMock.mockResolvedValueOnce(session.token);
+    const { result } = renderAuth();
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    const cachedTransactions = [{ id: 'despesa-privada' }];
+    queryClient.setQueryData(['despesas', session.user.id], cachedTransactions);
+
+    await act(async () => {
+      await expect(result.current.updatePassword('NovaSenha123!')).rejects.toBe(error);
+    });
+
+    expect(clearSessionTokenMock).not.toHaveBeenCalled();
+    expect(result.current.isAuthenticated).toBe(true);
+    expect(result.current.user).toEqual(session.user);
+    expect(result.current.profile).toEqual(profile);
+    expect(queryClient.getQueryData(['despesas', session.user.id])).toEqual(cachedTransactions);
   });
 
   test('restaura usuário e perfil usando me quando existe um token válido', async () => {

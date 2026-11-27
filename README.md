@@ -338,7 +338,7 @@ incompatível do Expo e não deve ser aplicado.
 
 ## Limitações e próximas etapas
 
-- O fluxo de recuperação usa token local nesta etapa e ainda não envia e-mail.
+- A recuperação solicita o envio de um link por e-mail à API. A redefinição acontece no site e, depois, o usuário volta ao app para entrar com a nova senha. O envio depende da configuração de e-mail no backend.
 - O retorno OAuth por aplicativo bancário será validado em um development build.
 - EAS, assinatura, geração do AAB e publicação na Play Store ainda serão configurados.
 - A tela de notificações permanece fora desta versão mobile.

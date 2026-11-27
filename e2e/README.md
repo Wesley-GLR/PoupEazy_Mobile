@@ -31,7 +31,7 @@ em 5 suítes. TypeScript (`npx tsc --noEmit`) e lint (`npm run lint`) também pa
 - Emulador iniciado ou aparelho Android conectado por USB com depuração autorizada. `adb devices` deve mostrar o dispositivo como `device`. Para simplificar, mantenha somente um dispositivo conectado.
 - Maestro CLI no `PATH`. Siga a [instalação oficial do Maestro para Windows](https://docs.maestro.dev/maestro-cli/how-to-install-maestro-cli) e confira `maestro --help`. O Maestro requer Java 17 ou superior; isso não substitui o requisito de compatibilidade do build Expo.
 
-Use o aplicativo Android instalado com o pacote `com.wesleyglr.poupeazy`, em build **debug** (`__DEV__` habilitado). O fluxo não é direcionado ao Expo Go.
+Use o aplicativo Android de testes instalado com o pacote `com.wesleyglr.poupeazy`. O fluxo não é direcionado ao Expo Go e não depende de tokens de recuperação retornados pela API.
 
 ## 1. API e banco local — terminal 1
 
@@ -72,7 +72,7 @@ npm start
 
 `db:init` aplica `db/schema.sql`, que já contém as tabelas e migrações necessárias para um banco novo. As variáveis acima sobrepõem os valores carregados de `.env`. Não use a API publicada no Render nem credenciais de produção neste roteiro.
 
-`NODE_ENV=test` permite que `/auth/forgot-password` devolva o `resetToken` e desativa o limite de requisições nos testes. A recuperação exercitada aqui usa esse token local; o envio de e-mail ainda não faz parte do fluxo implementado. Credenciais da Pluggy não são necessárias.
+`NODE_ENV=test` não permite obter tokens de recuperação pela API. Para testar a solicitação com os endereços descartáveis deste roteiro, use uma instância de testes com transporte de e-mail capturado pelo harness do backend, sem enviar para o Gmail real. O envio precisa estar habilitado nessa instância; caso contrário a API responde que o serviço está indisponível. Credenciais da Pluggy não são necessárias.
 
 ## 2. Instalar o app e manter o Metro — terminal 2
 
@@ -93,7 +93,7 @@ adb reverse tcp:3002 tcp:3002
 $env:EXPO_PUBLIC_API_URL = 'http://127.0.0.1:3002/api'
 ```
 
-Deixe a API e o Metro rodando durante o teste. Se o Metro já estava aberto com outra URL, encerre-o e reinicie-o no terminal com a variável correta usando `npx expo start --clear`. Não use build release: a tela de recuperação só continua automaticamente com o token quando `__DEV__` está habilitado.
+Deixe a API e o Metro rodando durante o teste. Se o Metro já estava aberto com outra URL, encerre-o e reinicie-o no terminal com a variável correta usando `npx expo start --clear`. A tela de recuperação tem o mesmo comportamento em desenvolvimento e produção.
 
 Abra o app uma vez e confira a tela de login. No primeiro início, pode ser necessário fechar manualmente uma apresentação/menu de desenvolvimento do Expo antes de executar o fluxo. O teste deve operar as telas do PoupEazy.
 
@@ -117,11 +117,12 @@ O fluxo verifica, em sequência:
 1. Abertura sem sessão e rejeição de credenciais inválidas.
 2. Cadastro, retorno ao login e acesso ao painel com a conta criada.
 3. Sessão preservada ao fechar/reabrir o app; depois do logout, reabertura permanece na tela de login.
-4. Solicitação de recuperação, redefinição por token local, rejeição da senha antiga e aceitação da nova.
-5. Logout final.
+4. Solicitação de recuperação, mensagem genérica sem revelar se a conta existe e retorno à tela de login.
 
-Não há API simulada no E2E. Cada execução cria uma conta `Usuario E2E` com e-mail `e2e.auth.<timestamp>.<aleatorio>@example.com`. As senhas sintéticas são `E2eInicial123!` e, após redefinição, `E2eAtualizada456!`; não reutilize essas senhas fora do banco de testes.
+Os fluxos de cadastro, login e sessão usam API e banco reais. Somente o transporte de e-mail deve ser capturado no servidor de testes. Cada execução cria uma conta `Usuario E2E` com e-mail `e2e.auth.<timestamp>.<aleatorio>@example.com` e senha sintética `E2eInicial123!`; não reutilize essa senha fora do banco de testes.
 
-O `clearState` inicial apaga os dados locais **somente do app alvo** no dispositivo; use uma instalação de testes, sem uma sessão pessoal que queira preservar. As contas criadas permanecem no banco, pois a API não oferece exclusão de usuário. Use um banco descartável dedicado e não limpe dados de outros usuários.
+O reset completo pelo link do e-mail precisa de uma verificação integrada separada: solicite a recuperação para uma caixa de testes que você controla, confira o link recebido e abra a página no navegador. Defina a nova senha, volte ao app, confirme que a senha antiga é recusada e que a nova funciona. Reutilizar o link ou usar um link expirado deve falhar. Este YAML não acessa a caixa de e-mail nem comprova a entrega de mensagens.
+
+O `clearState` inicial apaga os dados locais **somente do app alvo** no dispositivo; use uma instalação de testes, sem uma sessão pessoal que queira preservar. As contas criadas permanecem no banco; o roteiro não executa a exclusão. Use um banco descartável dedicado e não limpe dados de outros usuários.
 
 O resultado só será aprovado após o Maestro concluir o fluxo sem falhas. Consulte os artefatos gerados em `.tmp/maestro` e registre a data, dispositivo e resultado da execução. Em caso de falha no primeiro acesso, confira primeiro API, URL embutida no app, conectividade e eventuais telas de desenvolvimento.
