@@ -9,6 +9,7 @@ import { useAuth } from '@/auth/auth-context';
 import { Button, Card, ScreenContainer, TextField, ThemedText } from '@/components/ui';
 import { colors, spacing } from '@/theme';
 import { getErrorMessage } from '@/utils/format';
+import { openPrivacyPolicy } from '@/utils/privacy-policy';
 
 const ACCOUNT_DELETION_URL = 'https://poup-eazy.vercel.app/excluir-conta';
 
@@ -90,6 +91,14 @@ export default function ProfileScreen() {
         {passwordForm.formState.errors.root?.message ? <ThemedText color={colors.danger} variant="caption">{passwordForm.formState.errors.root.message}</ThemedText> : null}
         <Button title="Atualizar senha" variant="secondary" loading={passwordForm.formState.isSubmitting} onPress={() => void savePassword()} />
       </Card>
+
+      <Button
+        title="Política de Privacidade"
+        variant="ghost"
+        accessibilityRole="link"
+        accessibilityHint="Abre a política de privacidade do PoupEazy no navegador."
+        onPress={() => void openPrivacyPolicy()}
+      />
 
       <Card>
         <ThemedText variant="heading">Excluir conta</ThemedText>

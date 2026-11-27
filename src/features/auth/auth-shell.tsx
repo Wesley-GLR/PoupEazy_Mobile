@@ -3,8 +3,9 @@ import { KeyboardAvoidingView, Platform, ScrollView, View, type ViewStyle } from
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { BrandLogo } from '@/components/brand-logo';
-import { Card, ThemedText } from '@/components/ui';
+import { Button, Card, ThemedText } from '@/components/ui';
 import { colors, spacing } from '@/theme';
+import { openPrivacyPolicy } from '@/utils/privacy-policy';
 
 export function AuthShell({ title, subtitle, children }: PropsWithChildren<{ title: string; subtitle: string }>) {
   return (
@@ -22,6 +23,13 @@ export function AuthShell({ title, subtitle, children }: PropsWithChildren<{ tit
               <ThemedText color={colors.textMuted} style={styles.center}>{subtitle}</ThemedText>
             </View>
             {children}
+            <Button
+              title="Política de Privacidade"
+              variant="ghost"
+              accessibilityRole="link"
+              accessibilityHint="Abre a política de privacidade do PoupEazy no navegador."
+              onPress={() => void openPrivacyPolicy()}
+            />
           </Card>
         </ScrollView>
       </KeyboardAvoidingView>

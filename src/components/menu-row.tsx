@@ -1,21 +1,21 @@
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
-import { Pressable, View, type ViewStyle } from 'react-native';
+import { Pressable, View, type PressableProps, type ViewStyle } from 'react-native';
 
 import { ThemedText } from '@/components/ui';
 import { colors, radius, spacing } from '@/theme';
 
 type IconName = React.ComponentProps<typeof MaterialCommunityIcons>['name'];
 
-export function MenuRow({ icon, title, subtitle, onPress, danger = false }: {
+export function MenuRow({ icon, title, subtitle, onPress, danger = false, accessibilityRole = 'button', accessibilityHint }: {
   icon: IconName;
   title: string;
   subtitle?: string;
   onPress: () => void;
   danger?: boolean;
-}) {
+} & Pick<PressableProps, 'accessibilityRole' | 'accessibilityHint'>) {
   const color = danger ? colors.danger : colors.primary;
   return (
-    <Pressable accessibilityRole="button" onPress={onPress} style={({ pressed }) => [styles.row, pressed && styles.pressed]}>
+    <Pressable accessibilityRole={accessibilityRole} accessibilityHint={accessibilityHint} onPress={onPress} style={({ pressed }) => [styles.row, pressed && styles.pressed]}>
       <View style={[styles.icon, { backgroundColor: danger ? colors.dangerSoft : colors.primarySoft }]}>
         <MaterialCommunityIcons color={color} name={icon} size={22} />
       </View>

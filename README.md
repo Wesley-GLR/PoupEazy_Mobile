@@ -70,8 +70,19 @@ O vínculo é compartilhado entre o site e o aplicativo para a mesma conta. O re
 | Código do backend | GitHub | [Wesley-GLR/PoupEazy_BackEnd](https://github.com/Wesley-GLR/PoupEazy_BackEnd) |
 | Código do aplicativo | GitHub | [Wesley-GLR/PoupEazy_Mobile](https://github.com/Wesley-GLR/PoupEazy_Mobile) |
 
-O aplicativo ainda não está publicado na Play Store. A configuração EAS, a geração do AAB e a
-publicação serão realizadas depois da aprovação dos testes locais.
+O aplicativo já é distribuído em testes internos no Google Play. As configurações finais da
+loja serão concluídas depois da validação das funcionalidades e das páginas públicas.
+
+### Privacidade e exclusão da conta
+
+O link para a [Política de Privacidade](https://poup-eazy.vercel.app/privacidade) fica disponível no menu
+**Mais**, no **Perfil** e nas telas de autenticação, inclusive antes do cadastro. Os links abrem
+o navegador; se não for possível abri-lo, o app mostra o endereço para acesso manual.
+
+A [página de exclusão da conta](https://poup-eazy.vercel.app/excluir-conta) é aberta por
+**Mais → Meu perfil → Excluir conta**. A exclusão só é concluída no site, após confirmar a identidade.
+As duas páginas web precisam estar publicadas e acessíveis sem login antes de distribuir uma
+versão do aplicativo com esses links ou cadastrar os endereços no Google Play.
 
 ---
 

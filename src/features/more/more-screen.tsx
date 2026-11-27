@@ -8,6 +8,7 @@ import { BrandLogo } from '@/components/brand-logo';
 import { MenuRow } from '@/components/menu-row';
 import { Card, ScreenContainer, ThemedText } from '@/components/ui';
 import { colors, spacing } from '@/theme';
+import { openPrivacyPolicy } from '@/utils/privacy-policy';
 
 export default function MoreScreen() {
   const { profile, user } = useAuth();
@@ -27,6 +28,14 @@ export default function MoreScreen() {
         <MenuRow icon="file-chart-outline" title="Relatórios" subtitle="Escolha o período e receba por e-mail" onPress={() => router.push('/(tabs)/(more)/reports')} />
         <MenuRow icon="shape-outline" title="Categorias" subtitle="Organize receitas e despesas" onPress={() => router.push('/(tabs)/(more)/categories')} />
         <MenuRow icon="bank-outline" title="Open Finance" subtitle="Conecte e sincronize suas contas" onPress={() => router.push('/(tabs)/(more)/open-finance')} />
+        <MenuRow
+          icon="shield-account-outline"
+          title="Política de Privacidade"
+          subtitle="Saiba como seus dados são utilizados"
+          accessibilityRole="link"
+          accessibilityHint="Abre a política de privacidade do PoupEazy no navegador."
+          onPress={() => void openPrivacyPolicy()}
+        />
       </Card>
       <ThemedText variant="caption" color={colors.textMuted} style={styles.center}>
         PoupEazy {Constants.expoConfig?.version ? `v${Constants.expoConfig.version}` : ''} · Projeto acadêmico
