@@ -132,3 +132,22 @@ O reset completo pelo link do e-mail precisa de uma verificação integrada sepa
 O `clearState` inicial apaga os dados locais **somente do app alvo** no dispositivo; use uma instalação de testes, sem uma sessão pessoal que queira preservar. As contas criadas permanecem no banco; o roteiro não executa a exclusão. Use um banco descartável dedicado e não limpe dados de outros usuários.
 
 O resultado só será aprovado após o Maestro concluir o fluxo sem falhas. Consulte os artefatos gerados em `.tmp/maestro` e registre a data, dispositivo e resultado da execução. Em caso de falha no primeiro acesso, confira primeiro API, URL embutida no app, conectividade e eventuais telas de desenvolvimento.
+
+## Preferências de e-mail
+
+Os testes de serviço e tela das preferências usam transporte/serviços simulados, sem acessar a API publicada ou o Gmail:
+
+```powershell
+npx jest --runInBand --runTestsByPath __tests__/email-preferences-screen.test.tsx __tests__/email-preferences-cache.test.tsx __tests__/api-services.test.ts __tests__/email-verification.test.tsx
+```
+
+A tela usa `Switch` nativo do `@expo/ui`; o teste Jest substitui somente essa fronteira visual. Antes da publicação, confira no Expo Go compatível com SDK 57 ou em uma instalação de testes:
+
+1. Abra **Mais → Preferências de e-mail**. Uma conta sem configuração deve iniciar com os quatro controles desligados, orçamento 80% e mínimos independentes de despesas/receitas em 100,00, sem salvar automaticamente.
+2. Edite percentual e valores mínimos e volte do segundo plano sem salvar. O rascunho deve permanecer; **Cancelar** restaura os valores recebidos da API. Confira teclado, rolagem, texto ampliado e leitura dos controles por acessibilidade.
+3. Em conta antiga sem e-mail confirmado, o acesso ao app continua normal e ativar alertas fica bloqueado. Solicite o link usando API/transporte de testes capturado, confirme no site e retorne ao app. O estado deve atualizar sem encerrar a sessão; **Já confirmei, atualizar** oferece nova consulta manual.
+4. Em conta confirmada, teste percentuais 1 e 100 e rejeição de 0, 101, vazio e fração. Nos mínimos monetários, confira `100,50`, `1.234,56`, `0,01` e o máximo `9999999999,99`; rejeite `1,234`, `100.001`, valores negativos, zero, acima do máximo ou com casas extras. Para agrupar milhares, use a vírgula decimal, como `1.234,00`.
+5. Ative cada controle separadamente, salve e reabra para conferir a persistência e a independência entre despesas, receitas, metas e orçamento. Uma falha de gravação deve preservar todos os valores preenchidos. Confirme que as regras exibidas falam de lançamentos registrados no PoupEazy e de conclusões futuras, sem prometer monitoramento bancário em tempo real ou retroatividade.
+6. Desligue os alertas novamente ao encerrar o teste. A tela não comprova entrega, deduplicação ou processamento dos avisos; esses cenários pertencem aos testes do worker/backend com captura de e-mail.
+
+Este roteiro visual ainda precisa ser executado em dispositivo; os testes Jest não comprovam a renderização do controle nativo.

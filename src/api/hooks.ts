@@ -3,6 +3,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import type {
   BudgetInput,
   CategoryInput,
+  EmailPreferences,
+  EmailPreferencesInput,
   GoalInput,
   TransactionFilters,
   TransactionInput,
@@ -11,6 +13,7 @@ import type {
 import {
   budgetsService,
   categoriesService,
+  emailPreferencesService,
   goalsService,
   integrationsService,
   transactionsService,
@@ -22,7 +25,30 @@ export const queryKeys = {
   budgets: ['budgets'] as const,
   goals: ['goals'] as const,
   integrations: ['integrations'] as const,
+  emailPreferences: ['email-preferences'] as const,
 };
+
+export function useEmailPreferences() {
+  return useQuery({
+    queryKey: queryKeys.emailPreferences,
+    queryFn: emailPreferencesService.get,
+    staleTime: 0,
+    refetchOnWindowFocus: 'always',
+  });
+}
+
+export function useUpdateEmailPreferences() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: (input: EmailPreferencesInput) => emailPreferencesService.update(input),
+    onMutate: () => client.cancelQueries({ queryKey: queryKeys.emailPreferences }),
+    onSuccess: async (preferences: EmailPreferences) => {
+      // Um GET iniciado antes ou durante o PATCH nao deve restaurar valores antigos.
+      await client.cancelQueries({ queryKey: queryKeys.emailPreferences });
+      client.setQueryData(queryKeys.emailPreferences, preferences);
+    },
+  });
+}
 
 export function useTransactions(filters: TransactionFilters = {}) {
   return useQuery({

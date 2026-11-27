@@ -20,6 +20,7 @@ movimentações por Open Finance.
 - **Metas Financeiras** — Criação e edição de metas, acompanhamento do progresso e registro de entradas ou retiradas
 - **Orçamentos Mensais** — Planejamento do limite de gastos e comparação entre o valor planejado e o valor realizado
 - **Perfil** — Atualização de dados pessoais, alteração de senha e encerramento da sessão
+- **Preferências de e-mail** — Ativação independente dos alertas de orçamento, despesas, receitas e metas concluídas, com confirmação do endereço de recebimento
 - **Open Finance** — Conexão com instituições via Pluggy, sincronização pelo backend e deduplicação das transações importadas
 - **Chatbot WhatsApp** — Vínculo da conta em Transações, registro de despesas com confirmação e consulta de relatórios (RF02)
 - **Experiência mobile** — Cinco abas principais, formulários em modais, atualização por gesto e estados de carregamento, erro e conteúdo vazio
@@ -279,7 +280,7 @@ development build Android e será validado antes da fase de publicação.
 | RF04 | Integração Open Finance | Implementado com Pluggy |
 | RF05 | Categorização automática | Parcial, aplicada às importações bancárias |
 | RF06 | Relatórios financeiros | Implementado no dashboard mensal |
-| RF07 | Notificações e alertas | Estrutura disponível no backend; tela mobile adiada |
+| RF07 | Notificações e alertas | Preferências dos alertas de orçamento, lançamentos e metas por e-mail disponíveis; central de notificações adiada |
 | RF08 | Orçamentos mensais | Implementado |
 | RNF01 | Interface intuitiva | Implementado com navegação e layout próprios para mobile |
 | RNF02 | Proteção de dados | Implementado com JWT, SecureStore e autorização por usuário |
@@ -338,6 +339,9 @@ incompatível do Expo e não deve ser aplicado.
 
 ## Limitações e próximas etapas
 
+- Em **Mais → Preferências de e-mail**, todos os tipos de alerta começam desligados. O percentual de orçamento é 80%, e os limites independentes de despesas e receitas são R$ 100,00. Ativar qualquer tipo exige e-mail confirmado; contas antigas continuam acessando o app enquanto confirmam o endereço. A tela permite solicitar o link sem encerrar a sessão e atualiza o estado ao retornar ao app.
+- Os alertas consideram despesas confirmadas do orçamento do mês atual no horário de Brasília, sem descontar receitas; aportes em metas entram como despesas. Há um aviso ao atingir o percentual e outro ao ultrapassar 100%, no máximo um de cada por mês. Quando ambos são atingidos juntos, o envio é consolidado. Desligar, religar ou mudar o percentual não reinicia os avisos do mês.
+- Despesas e receitas avisam sobre novos lançamentos confirmados registrados no PoupEazy, inclusive importações, quando o valor for igual ou superior ao limite escolhido. Metas avisam uma vez ao atingir o valor planejado ou ao serem marcadas como concluídas. Esses três alertas não são retroativos à ativação. Os limites monetários aceitam R$ 0,01 a R$ 9.999.999.999,99, com até duas casas decimais; entradas ambíguas como `1,234` são rejeitadas em vez de reinterpretadas como milhares.
 - A recuperação solicita o envio de um link por e-mail à API. A redefinição acontece no site e, depois, o usuário volta ao app para entrar com a nova senha. O envio depende da configuração de e-mail no backend.
 - Novos cadastros precisam confirmar o e-mail pelo link no navegador antes do primeiro login. Contas antigas continuam com o acesso habitual. O app permite reenviar a confirmação com intervalo de um minuto; nenhum token de sessão é emitido pelo cadastro.
 - O retorno OAuth por aplicativo bancário será validado em um development build.

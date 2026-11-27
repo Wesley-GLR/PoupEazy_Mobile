@@ -5,6 +5,8 @@ import type {
   BudgetInput,
   Category,
   CategoryInput,
+  EmailPreferences,
+  EmailPreferencesInput,
   ForgotPasswordResponse,
   Goal,
   GoalInput,
@@ -46,6 +48,19 @@ export const authService = {
     api.post<void>('/auth/reset-password', { token, novaSenha }, { auth: false }),
   updatePassword: (novaSenha: string) => api.patch<void>('/auth/password', { novaSenha }),
   updateProfile: (input: Partial<Pick<Profile, 'nome' | 'telefone'>>) => api.patch<Profile>('/profile', input),
+};
+
+export const emailPreferencesService = {
+  get: () => api.get<EmailPreferences>('/preferencias-email'),
+  update: (input: EmailPreferencesInput) => api.patch<EmailPreferences>('/preferencias-email', {
+    alerta_orcamento_ativo: input.alerta_orcamento_ativo,
+    alerta_orcamento_percentual: input.alerta_orcamento_percentual,
+    alerta_despesa_ativo: input.alerta_despesa_ativo,
+    alerta_despesa_valor_minimo: input.alerta_despesa_valor_minimo,
+    alerta_receita_ativo: input.alerta_receita_ativo,
+    alerta_receita_valor_minimo: input.alerta_receita_valor_minimo,
+    alerta_meta_concluida_ativo: input.alerta_meta_concluida_ativo,
+  }),
 };
 
 export const transactionsService = {

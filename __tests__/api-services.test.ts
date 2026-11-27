@@ -2,6 +2,7 @@ import { api } from '@/api/client';
 import {
   authService,
   categoriesService,
+  emailPreferencesService,
   integrationsService,
   transactionsService,
 } from '@/api/services';
@@ -86,6 +87,51 @@ describe('API service contracts', () => {
     expect(postMock).toHaveBeenCalledWith(
       '/auth/resend-verification', { email: 'pessoa@example.com' }, { auth: false },
     );
+  });
+
+  test('email preferences are loaded through an authenticated endpoint without changing them', async () => {
+    const preferences = {
+      alerta_orcamento_ativo: false,
+      alerta_orcamento_percentual: 80,
+      alerta_despesa_ativo: false,
+      alerta_despesa_valor_minimo: 100,
+      alerta_receita_ativo: false,
+      alerta_receita_valor_minimo: 100,
+      alerta_meta_concluida_ativo: false,
+      email_verificado: true,
+    };
+    getMock.mockResolvedValue(preferences);
+
+    await expect(emailPreferencesService.get()).resolves.toEqual(preferences);
+
+    expect(getMock).toHaveBeenCalledWith('/preferencias-email');
+    expect(patchMock).not.toHaveBeenCalled();
+  });
+
+  test('email preferences updates send only the seven editable fields', async () => {
+    const preferences = {
+      alerta_orcamento_ativo: true,
+      alerta_orcamento_percentual: 75,
+      alerta_despesa_ativo: true,
+      alerta_despesa_valor_minimo: 250.5,
+      alerta_receita_ativo: false,
+      alerta_receita_valor_minimo: 100,
+      alerta_meta_concluida_ativo: true,
+      email_verificado: true,
+    };
+    patchMock.mockResolvedValue(preferences);
+
+    await expect(emailPreferencesService.update(preferences)).resolves.toEqual(preferences);
+
+    expect(patchMock).toHaveBeenCalledWith('/preferencias-email', {
+      alerta_orcamento_ativo: true,
+      alerta_orcamento_percentual: 75,
+      alerta_despesa_ativo: true,
+      alerta_despesa_valor_minimo: 250.5,
+      alerta_receita_ativo: false,
+      alerta_receita_valor_minimo: 100,
+      alerta_meta_concluida_ativo: true,
+    });
   });
 
   test('transaction filters are encoded and empty values are omitted', async () => {

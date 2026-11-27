@@ -35,6 +35,19 @@ export interface ResendVerificationResponse {
   message: string;
 }
 
+export interface EmailPreferences {
+  alerta_orcamento_ativo: boolean;
+  alerta_orcamento_percentual: number;
+  alerta_despesa_ativo: boolean;
+  alerta_despesa_valor_minimo: number;
+  alerta_receita_ativo: boolean;
+  alerta_receita_valor_minimo: number;
+  alerta_meta_concluida_ativo: boolean;
+  email_verificado: boolean;
+}
+
+export type EmailPreferencesInput = Omit<EmailPreferences, 'email_verificado'>;
+
 export interface WhatsAppLinkStatus {
   habilitado: boolean;
   vinculado: boolean;

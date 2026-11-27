@@ -23,6 +23,7 @@ export default function MoreScreen() {
       </Card>
       <Card style={styles.menu}>
         <MenuRow icon="account-outline" title="Meu perfil" subtitle="Nome, telefone e senha" onPress={() => router.push('/(tabs)/(more)/profile')} />
+        <MenuRow icon="email-outline" title="Preferências de e-mail" subtitle="Alertas de orçamento, lançamentos e metas" onPress={() => router.push('/(tabs)/(more)/email-preferences')} />
         <MenuRow icon="shape-outline" title="Categorias" subtitle="Organize receitas e despesas" onPress={() => router.push('/(tabs)/(more)/categories')} />
         <MenuRow icon="bank-outline" title="Open Finance" subtitle="Conecte e sincronize suas contas" onPress={() => router.push('/(tabs)/(more)/open-finance')} />
       </Card>
