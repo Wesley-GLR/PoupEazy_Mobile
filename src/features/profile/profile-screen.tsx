@@ -1,4 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import * as WebBrowser from 'expo-web-browser';
+import { useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { Alert, View, type ViewStyle } from 'react-native';
 import { z } from 'zod';
@@ -7,6 +9,8 @@ import { useAuth } from '@/auth/auth-context';
 import { Button, Card, ScreenContainer, TextField, ThemedText } from '@/components/ui';
 import { colors, spacing } from '@/theme';
 import { getErrorMessage } from '@/utils/format';
+
+const ACCOUNT_DELETION_URL = 'https://poup-eazy.vercel.app/excluir-conta';
 
 const profileSchema = z.object({
   name: z.string().trim().min(2, 'Informe seu nome.').max(120, 'Nome muito longo.'),
@@ -19,6 +23,7 @@ const passwordSchema = z.object({
 
 export default function ProfileScreen() {
   const { user, profile, updateProfile, updatePassword, signOut } = useAuth();
+  const [openingDeletionPage, setOpeningDeletionPage] = useState(false);
   const profileForm = useForm<z.infer<typeof profileSchema>>({
     resolver: zodResolver(profileSchema),
     values: { name: profile?.nome ?? '', phone: profile?.telefone ?? '' },
@@ -53,6 +58,20 @@ export default function ProfileScreen() {
     ]);
   }
 
+  async function openDeletionPage() {
+    setOpeningDeletionPage(true);
+    try {
+      await WebBrowser.openBrowserAsync(ACCOUNT_DELETION_URL);
+    } catch {
+      Alert.alert(
+        'Não foi possível abrir a página',
+        `Tente novamente ou acesse ${ACCOUNT_DELETION_URL} no navegador.`,
+      );
+    } finally {
+      setOpeningDeletionPage(false);
+    }
+  }
+
   return (
     <ScreenContainer keyboardAware>
       <Card>
@@ -70,6 +89,20 @@ export default function ProfileScreen() {
         <Controller control={passwordForm.control} name="confirmation" render={({ field }) => <TextField label="Confirmar nova senha" secureTextEntry autoComplete="new-password" value={field.value} onBlur={field.onBlur} onChangeText={field.onChange} error={passwordForm.formState.errors.confirmation?.message} />} />
         {passwordForm.formState.errors.root?.message ? <ThemedText color={colors.danger} variant="caption">{passwordForm.formState.errors.root.message}</ThemedText> : null}
         <Button title="Atualizar senha" variant="secondary" loading={passwordForm.formState.isSubmitting} onPress={() => void savePassword()} />
+      </Card>
+
+      <Card>
+        <ThemedText variant="heading">Excluir conta</ThemedText>
+        <ThemedText color={colors.textMuted}>
+          Para excluir sua conta e os dados associados, abra a página do PoupEazy no navegador. Você precisará confirmar sua identidade e concluir a exclusão nessa página.
+        </ThemedText>
+        <Button
+          title="Excluir conta"
+          variant="destructive"
+          loading={openingDeletionPage}
+          accessibilityHint="Abre o site do PoupEazy para confirmar sua identidade e excluir sua conta."
+          onPress={() => void openDeletionPage()}
+        />
       </Card>
 
       <View style={styles.signOut}>
