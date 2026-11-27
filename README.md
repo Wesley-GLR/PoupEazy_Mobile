@@ -21,8 +21,20 @@ movimentações por Open Finance.
 - **Orçamentos Mensais** — Planejamento do limite de gastos e comparação entre o valor planejado e o valor realizado
 - **Perfil** — Atualização de dados pessoais, alteração de senha e encerramento da sessão
 - **Open Finance** — Conexão com instituições via Pluggy, sincronização pelo backend e deduplicação das transações importadas
+- **Chatbot WhatsApp** — Vínculo da conta em Transações, registro de despesas com confirmação e consulta de relatórios (RF02)
 - **Experiência mobile** — Cinco abas principais, formulários em modais, atualização por gesto e estados de carregamento, erro e conteúdo vazio
 - **Conectividade** — Cache com React Query, detecção de rede e tratamento padronizado de falhas da API
+
+---
+
+## Registrar via WhatsApp
+
+1. Na demonstração com Vonage, inscreva seu número pelo link de adesão do Sandbox enviado pela equipe.
+2. Entre na sua conta PoupEazy e abra **Transações → Registrar via WhatsApp → Gerar link de vínculo**. Abra o WhatsApp e envie a mensagem preenchida. Volte ao PoupEazy e selecione **Já enviei a mensagem**.
+3. Envie `cabelo 35` no WhatsApp e responda `sim` para confirmar. Atualize **Transações** para ver o lançamento identificado como **WhatsApp**.
+4. Envie `relatório diário`, `relatório semanal`, `relatório mensal` ou `relatório total` para consultar sua conta. O bot pode enviar um gráfico em PNG quando o backend está configurado com Vonage e mídia HTTPS.
+
+O vínculo é compartilhado entre o site e o aplicativo para a mesma conta. O recurso depende da API estar configurada e habilitada. Consulte o [guia de configuração do backend](https://github.com/Wesley-GLR/PoupEazy_BackEnd/blob/main/WHATSAPP_DEMO.md).
 
 ---
 
@@ -262,7 +274,7 @@ development build Android e será validado antes da fase de publicação.
 | Código | Descrição | Situação no aplicativo móvel |
 |--------|-----------|-------------------------------|
 | RF01 | Gerenciar usuários | Implementado |
-| RF02 | ChatBot WhatsApp | Estrutura compatível no backend; fora desta etapa mobile |
+| RF02 | Chatbot WhatsApp | Implementado · requer configuração no backend |
 | RF03 | Metas e gastos | Implementado |
 | RF04 | Integração Open Finance | Implementado com Pluggy |
 | RF05 | Categorização automática | Parcial, aplicada às importações bancárias |
@@ -329,7 +341,7 @@ incompatível do Expo e não deve ser aplicado.
 - O fluxo de recuperação usa token local nesta etapa e ainda não envia e-mail.
 - O retorno OAuth por aplicativo bancário será validado em um development build.
 - EAS, assinatura, geração do AAB e publicação na Play Store ainda serão configurados.
-- A tela de notificações e o ChatBot WhatsApp permanecem fora desta versão mobile.
+- A tela de notificações permanece fora desta versão mobile.
 - A versão atual foi validada prioritariamente no Android.
 
 ---
